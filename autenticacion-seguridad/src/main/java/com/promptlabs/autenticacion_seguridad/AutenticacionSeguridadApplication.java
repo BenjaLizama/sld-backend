@@ -1,0 +1,13 @@
+package com.promptlabs.autenticacion_seguridad;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class AutenticacionSeguridadApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(AutenticacionSeguridadApplication.class, args);
+	}
+
+}
