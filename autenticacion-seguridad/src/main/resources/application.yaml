@@ -3,3 +3,5 @@ spring:
     name: autenticacion-seguridad
   profiles:
     active: dev
+  session:
+    store-type: jdbc
