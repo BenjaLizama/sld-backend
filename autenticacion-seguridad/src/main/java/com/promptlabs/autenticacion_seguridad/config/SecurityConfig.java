@@ -22,8 +22,9 @@ public class SecurityConfig {
         httpSecurity
                 // CSRF deshabilitado para utilizar el cliente H2 y POSTMAN sin problemas.
                 .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2/h2-console/**").permitAll() // TODO: Solo un administrador debería tener acceso a esto.
+                        .requestMatchers("/h2-console/**").permitAll() // TODO: Solo un administrador debería tener acceso a esto.
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .anyRequest().authenticated())
                 // Permite que la consola de H2 se cargue en un frame.
