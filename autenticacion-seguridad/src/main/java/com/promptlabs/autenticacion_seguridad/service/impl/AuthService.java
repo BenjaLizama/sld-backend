@@ -1,4 +1,4 @@
-package com.promptlabs.autenticacion_seguridad.service;
+package com.promptlabs.autenticacion_seguridad.service.impl;
 
 import com.promptlabs.autenticacion_seguridad.dto.AuthResponse;
 import com.promptlabs.autenticacion_seguridad.dto.LoginRequest;
@@ -13,6 +13,7 @@ import com.promptlabs.autenticacion_seguridad.repository.CredentialRepository;
 import com.promptlabs.autenticacion_seguridad.repository.RefreshTokenRepository;
 import com.promptlabs.autenticacion_seguridad.repository.RoleRepository;
 import com.promptlabs.autenticacion_seguridad.security.SecurityCredential;
+import com.promptlabs.autenticacion_seguridad.service.IAuthService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,7 +26,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthService implements IAuthService {
 
     private final CredentialRepository credentialRepository;
     private final RoleRepository roleRepository;
@@ -41,6 +42,7 @@ public class AuthService {
      * @param request Recibe correo y contraseña.
      * @return Token de acceso y refreshToken.
      */
+    @Override
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(request.email(), request.password())
@@ -60,6 +62,7 @@ public class AuthService {
      * @param request Correo y contraseña.
      * @return Token de acceso.
      */
+    @Override
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         // Validar si el correo existe en la BD.
@@ -92,6 +95,7 @@ public class AuthService {
         return new AuthResponse(accessToken, refreshToken.getToken());
     }
 
+    @Override
     @Transactional
     public AuthResponse refreshToken(String requestToken) {
         return refreshTokenRepository.findByToken(requestToken)

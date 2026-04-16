@@ -1,4 +1,4 @@
-package com.promptlabs.autenticacion_seguridad.service;
+package com.promptlabs.autenticacion_seguridad.service.impl;
 
 import com.promptlabs.autenticacion_seguridad.entity.CredentialEntity;
 import com.promptlabs.autenticacion_seguridad.repository.CredentialRepository;

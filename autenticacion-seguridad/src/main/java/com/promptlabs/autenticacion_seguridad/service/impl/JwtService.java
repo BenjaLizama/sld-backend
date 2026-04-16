@@ -1,6 +1,7 @@
-package com.promptlabs.autenticacion_seguridad.service;
+package com.promptlabs.autenticacion_seguridad.service.impl;
 
 import com.promptlabs.autenticacion_seguridad.security.SecurityCredential;
+import com.promptlabs.autenticacion_seguridad.service.IJwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
-public class JwtService {
+public class JwtService implements IJwtService {
 
     private final PrivateKey privateKey;
     private final PublicKey publicKey;
@@ -42,6 +43,7 @@ public class JwtService {
     /**
      * PERMITE QUE OTROS SERVICIOS PUEDAN OBTENER LA LLAVE PÚBLICA
      */
+    @Override
     public String getPublicKeyAsBase64() {
         return Base64.getEncoder().encodeToString(this.publicKey.getEncoded());
     }
@@ -49,6 +51,7 @@ public class JwtService {
     /**
      * GENERA TOKEN FIRMADO CON LA LLAVE PRIVADA
      */
+    @Override
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> extraClaims = new HashMap<>();
 
@@ -73,6 +76,7 @@ public class JwtService {
     /**
      * EXTRAER EL USUARIO DEL TOKEN
      */
+    @Override
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -80,6 +84,7 @@ public class JwtService {
     /**
      * VALIDAR TOKEN
      */
+    @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
