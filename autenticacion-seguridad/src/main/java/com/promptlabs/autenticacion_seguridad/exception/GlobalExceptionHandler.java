@@ -83,6 +83,39 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 7. Manejo de error por correo existente.
+     */
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<StandarErrorResponse> handleEmailAlreadyExists(EmailAlreadyExistsException ex, HttpServletRequest request) {
+        log.warn("Intento de registro con correo duplicado en {}: {}", request.getRequestURI(), ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(errorMapper.toBusinessResponse(new IllegalArgumentException(ex.getMessage()), request.getRequestURI()));
+    }
+
+    /**
+     * 8. Error de configuración interna (Roles no encontrados).
+     */
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<StandarErrorResponse> handleRoleNotFoundException(RoleNotFoundException ex, HttpServletRequest request) {
+        log.error("ERROR CRÍTICO: Se intentó asignar un rol que no existe en la BD: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorMapper.toSystemErrorResponse(ex, request.getRequestURI()));
+    }
+
+    /**
+     * 9. Error de Refresh Token no encontrado.
+     */
+    @ExceptionHandler(RefreshTokenNotFoundException.class)
+    public ResponseEntity<StandarErrorResponse> handleRefreshTokenNotFound(RefreshTokenNotFoundException ex, HttpServletRequest request) {
+        log.warn("Refresh Token no válido o no encontrado en la ruta {}", request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(errorMapper.toBusinessResponse(new IllegalArgumentException(ex.getMessage()), request.getRequestURI()));
+    }
+
+    /**
      * 0. Error genérico de servidor.
      */
     @ExceptionHandler(Exception.class)
