@@ -4,9 +4,15 @@ import com.promptlabs.autenticacion_seguridad.dto.AuthResponse;
 import com.promptlabs.autenticacion_seguridad.dto.LoginRequest;
 import com.promptlabs.autenticacion_seguridad.dto.RegisterRequest;
 import com.promptlabs.autenticacion_seguridad.entity.CredentialEntity;
+import com.promptlabs.autenticacion_seguridad.entity.RefreshTokenEntity;
 import com.promptlabs.autenticacion_seguridad.entity.RoleEntity;
+import com.promptlabs.autenticacion_seguridad.exception.EmailAlreadyExistsException;
+import com.promptlabs.autenticacion_seguridad.exception.RefreshTokenNotFoundException;
+import com.promptlabs.autenticacion_seguridad.exception.RoleNotFoundException;
 import com.promptlabs.autenticacion_seguridad.repository.CredentialRepository;
+import com.promptlabs.autenticacion_seguridad.repository.RefreshTokenRepository;
 import com.promptlabs.autenticacion_seguridad.repository.RoleRepository;
+import com.promptlabs.autenticacion_seguridad.security.SecurityCredential;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,22 +33,26 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
+    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     /**
      * Inicio de sesión
      * @param request Recibe correo y contraseña.
-     * @return Token de acceso.
+     * @return Token de acceso y refreshToken.
      */
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
 
-        UserDetails user = userDetailsService.loadUserByUsername(request.email());
+        SecurityCredential user = (SecurityCredential) userDetailsService.loadUserByUsername(request.email());
 
-        String token = jwtService.generateToken(user);
+        String accessToken = jwtService.generateToken(user);
+        // Creamos el refresh token en la base de datos vinculado al UUID
+        RefreshTokenEntity refreshToken = refreshTokenService.createRefreshEntity(user.getId());
 
-        return new AuthResponse(token);
+        return new AuthResponse(accessToken, refreshToken.getToken());
     }
 
     /**
@@ -52,27 +62,51 @@ public class AuthService {
      */
     @Transactional
     public AuthResponse register(RegisterRequest request) {
-        // TODO: Validar que el email no exista en la BD (COMPLETADO)
+        // Validar si el correo existe en la BD.
         if (credentialRepository.existsByEmail(request.email())) {
-            throw new IllegalArgumentException("El correo electrónico ya está registrado en el sistema"); // TODO: CREAR EXCEPCIÓN PERSONALIZADA.
+            throw new EmailAlreadyExistsException("El correo electrónico ya está registrado en el sistema");
         }
 
+        // Buscar el rol por defecto.
         RoleEntity defaultRole = roleRepository.findByRoleName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("Error crítico: El rol ROLE_USER no existe en la base de datos.")); // TODO: CREAR EXCEPCIÓN PERSONALIZADA.
+                .orElseThrow(() -> new RoleNotFoundException("Error crítico: El rol ROLE_USER no existe en la base de datos."));
 
+        // Crear y guardar la credencial.
         CredentialEntity credential = new CredentialEntity();
         credential.setEmail(request.email());
         credential.setPassword(passwordEncoder.encode(request.password()));
         credential.setIsValid(true);
-        // TODO: Asignar un rol por defecto
         credential.setRoleList(Set.of(defaultRole));
 
-        credentialRepository.save(credential);
+        // Guardamos primero para que el ID sea generado y persistido.
+        CredentialEntity savedCredential = credentialRepository.save(credential);
 
-        UserDetails user = userDetailsService.loadUserByUsername(request.email());
-        String token = jwtService.generateToken(user);
+        // Preparamos la respuesta completa.
+        // Usamos el savedCredential para asegurar que tenemos el UUID disponible
+        SecurityCredential userDetails = new SecurityCredential(savedCredential);
 
-        return new AuthResponse(token);
+        String accessToken = jwtService.generateToken(userDetails);
+        RefreshTokenEntity refreshToken = refreshTokenService.createRefreshEntity(savedCredential.getId());
+
+        // Devolvemos ambos tokens.
+        return new AuthResponse(accessToken, refreshToken.getToken());
+    }
+
+    @Transactional
+    public AuthResponse refreshToken(String requestToken) {
+        return refreshTokenRepository.findByToken(requestToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshTokenEntity::getCredential)
+                .map(credential -> {
+                   UserDetails userDetails = new SecurityCredential(credential);
+                   String accessToken = jwtService.generateToken(userDetails);
+
+                   // "ROTACIÓN" | Creamos un nuevo token y el service elimina el anterior.
+                    RefreshTokenEntity newRefreshToken = refreshTokenService.createRefreshEntity(credential.getId());
+
+                   return new AuthResponse(accessToken, newRefreshToken.getToken());
+                })
+                .orElseThrow(() -> new RefreshTokenNotFoundException("Refresh token no encontrado."));
     }
 
 }
