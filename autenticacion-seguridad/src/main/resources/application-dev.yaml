@@ -1,0 +1,17 @@
+# Propiedades de aplicación | SOLO PARA DESARROLLO
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      path: /h2-console
+      enabled: true
+    port: 8081
+    security:
+      user:
+        name: admin
+        password: admin123
+    sql:
+      init:
+        mode: always

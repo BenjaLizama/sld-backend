@@ -1,3 +1,5 @@
 spring:
   application:
     name: autenticacion-seguridad
+  profiles:
+    active: dev
