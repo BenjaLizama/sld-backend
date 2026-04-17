@@ -3,5 +3,5 @@ spring:
     name: usuarios-perfiles
   profiles:
     active: dev
-  session:
-    store-type: jdbc
+    session:
+      store-type: jdbc
