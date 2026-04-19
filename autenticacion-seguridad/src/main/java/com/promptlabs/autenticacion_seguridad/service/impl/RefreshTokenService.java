@@ -2,7 +2,6 @@ package com.promptlabs.autenticacion_seguridad.service.impl;
 
 import com.promptlabs.autenticacion_seguridad.entity.CredentialEntity;
 import com.promptlabs.autenticacion_seguridad.repository.CredentialRepository;
-import com.promptlabs.autenticacion_seguridad.repository.RefreshTokenRepository;
 import com.promptlabs.autenticacion_seguridad.service.IRefreshTokenService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

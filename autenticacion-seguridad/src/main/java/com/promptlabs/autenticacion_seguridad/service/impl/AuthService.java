@@ -9,7 +9,6 @@ import com.promptlabs.autenticacion_seguridad.exception.EmailAlreadyExistsExcept
 import com.promptlabs.autenticacion_seguridad.exception.RefreshTokenNotFoundException;
 import com.promptlabs.autenticacion_seguridad.exception.RoleNotFoundException;
 import com.promptlabs.autenticacion_seguridad.repository.CredentialRepository;
-import com.promptlabs.autenticacion_seguridad.repository.RefreshTokenRepository;
 import com.promptlabs.autenticacion_seguridad.repository.RoleRepository;
 import com.promptlabs.autenticacion_seguridad.security.SecurityCredential;
 import com.promptlabs.autenticacion_seguridad.service.IAuthService;
