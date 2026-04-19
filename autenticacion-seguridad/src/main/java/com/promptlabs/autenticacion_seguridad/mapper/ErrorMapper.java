@@ -11,6 +11,7 @@ import java.util.Map;
 
 @Component
 public class ErrorMapper {
+    // TODO: ORGANIZAR RESPUESTAS DE ERRORES POR CODIGO.
 
     /**
      * BASE PARA EL RESTO DE MAPPERS
@@ -85,6 +86,14 @@ public class ErrorMapper {
         return buildBaseError(HttpStatus.METHOD_NOT_ALLOWED, path)
                 .code("ERR_METHOD_001")
                 .message("El método HTTP utilizado no está soportado para esta ruta.")
+                .developerMessage(ex.getMessage())
+                .build();
+    }
+
+    public StandarErrorResponse toAccountDisabledResponse(Exception ex, String path) {
+        return buildBaseError(HttpStatus.FORBIDDEN, path)
+                .code("ERR_FORBIDDEN_002")
+                .message("La cuenta se encuentra deshabilitada.")
                 .developerMessage(ex.getMessage())
                 .build();
     }

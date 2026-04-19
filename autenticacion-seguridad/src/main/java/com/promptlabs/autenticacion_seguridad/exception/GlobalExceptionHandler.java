@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -113,6 +114,39 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(errorMapper.toBusinessResponse(new IllegalArgumentException(ex.getMessage()), request.getRequestURI()));
+    }
+
+    /**
+     * 10. Error de credenciales no encontradas
+     */
+    @ExceptionHandler(CredentialNotFoundException.class)
+    public ResponseEntity<StandarErrorResponse> handleCredentialNotFound(CredentialNotFoundException ex, HttpServletRequest request) {
+        log.warn("Credencial no encontrada en {}: {}", request.getRequestURI(), ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(errorMapper.toBusinessResponse(new IllegalArgumentException(ex.getMessage()), request.getRequestURI()));
+    }
+
+    /**
+     * 11. Error las llaves no se leyeron/generaron
+     */
+    @ExceptionHandler(RsaKeyInitializationException.class)
+    public ResponseEntity<StandarErrorResponse> handleRsaKeyInitialization(RsaKeyInitializationException ex, HttpServletRequest request) {
+        log.error("Error crítico de inicialización RSA: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorMapper.toSystemErrorResponse(ex, request.getRequestURI()));
+    }
+
+    /**
+     * 12. Error de cuenta desactivada.
+     */
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<StandarErrorResponse> handleDisabledException(DisabledException ex, HttpServletRequest request) {
+        log.error("Intento de acceso a cuenta deshabilitada en {}", request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(errorMapper.toAccountDisabledResponse(new IllegalArgumentException(ex.getMessage()), request.getRequestURI()));
     }
 
     /**
