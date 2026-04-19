@@ -26,10 +26,21 @@ public class User {
     @JoinColumn(name = "gender_id")
     private Gender gender;
 
+    //agregamos excluciones para evitar bucles que saturen la memoria
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private StudentProfile studentProfile;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private TeacherProfile teacherProfile;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private ParentProfile parentProfile;
 
     private String firstName;
     private String middleName;
