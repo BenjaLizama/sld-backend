@@ -1,27 +1,22 @@
 package com.promptlabs.usuarios_perfiles.entity;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.UUID;
 
-@Table(name = "student_profiles")
+@Table(name = "parent_type")
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentProfile {
+public class ParentType {
 
     @Id
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
-    private String medicConditions;
-
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "user_id")
-    private User user;
-
+    private String relationship;
 }

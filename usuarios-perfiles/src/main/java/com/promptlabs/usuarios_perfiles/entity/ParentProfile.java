@@ -31,5 +31,4 @@ public class ParentProfile {
 
     //AGREGAR PARENTESCO
 
-
 }

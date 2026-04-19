@@ -2,7 +2,6 @@ package com.promptlabs.usuarios_perfiles.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
 import java.util.UUID;
 
