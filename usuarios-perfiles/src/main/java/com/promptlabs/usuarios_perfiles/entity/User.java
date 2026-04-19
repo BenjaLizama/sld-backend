@@ -12,8 +12,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class User {
+public class User {
 
     @Id
     private UUID id;
@@ -27,6 +26,9 @@ public abstract class User {
     @ManyToOne
     @JoinColumn(name = "gender_id")
     private Gender gender;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private StudentProfile studentProfile;
 
     private String firstName;
     private String middleName;
