@@ -2,18 +2,18 @@ package com.promptlabs.autenticacion_seguridad.repository;
 
 import com.promptlabs.autenticacion_seguridad.entity.CredentialEntity;
 import com.promptlabs.autenticacion_seguridad.entity.SessionEntity;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface SessionRepository extends JpaRepository<SessionEntity, UUID> {
+public interface SessionsRepository extends JpaRepository<SessionEntity, UUID> {
 
     Optional<SessionEntity> findByRefreshTokenHash(String refreshTokenHash);
 

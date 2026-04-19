@@ -1,11 +1,8 @@
 package com.promptlabs.autenticacion_seguridad.service;
 
-import com.promptlabs.autenticacion_seguridad.dto.AuthResponse;
-import com.promptlabs.autenticacion_seguridad.dto.LoginRequest;
-import com.promptlabs.autenticacion_seguridad.dto.RegisterRequest;
+import com.promptlabs.autenticacion_seguridad.dto.*;
 
 public interface IAuthService {
-    AuthResponse login(LoginRequest request);
-    AuthResponse register(RegisterRequest request);
-    AuthResponse refreshToken(String requestToken);
+    AuthResponse login(LoginWrapper wrapper);
+    AuthResponse register(RegisterWrapper registerWrapper);
 }

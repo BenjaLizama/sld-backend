@@ -7,9 +7,13 @@ import com.promptlabs.autenticacion_seguridad.repository.RoleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -20,53 +24,56 @@ public class RoleAndPrivilegeSeeder implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final PrivilegeRepository privilegeRepository;
 
+    private final Map<String, PrivilegeEntity> privilegeCache = new HashMap<>();
+
     @Override
     @Transactional
-    public void run(String... args) {
-        if (roleRepository.count() == 0) {
-            log.info("--- Iniciando Seeder de Seguridad ---");
+    public void run(String @NonNull ... args) {
+        log.info("--- Iniciando Seeder de Seguridad ---");
 
-            // 1. Crear Privilegios
-            PrivilegeEntity readPriv = createPrivilegeIfNotFound("READ_PRIVILEGE", "Permite leer información básica");
-            PrivilegeEntity writePriv = createPrivilegeIfNotFound("WRITE_PRIVILEGE", "Permite crear y editar información");
-            PrivilegeEntity deletePriv = createPrivilegeIfNotFound("DELETE_PRIVILEGE", "Permite eliminar registros");
+        // Crear privilegios SIEMPRE (porque el método ya evita duplicados)
+        PrivilegeEntity read = createPrivilegeIfNotFound("READ_PRIVILEGE", "Leer datos.");
+        PrivilegeEntity write = createPrivilegeIfNotFound("WRITE_PRIVILEGE", "Crear/editar datos.");
+        PrivilegeEntity delete = createPrivilegeIfNotFound("DELETE_PRIVILEGE", "Eliminar datos.");
 
-            // 2. Crear Rol ADMIN (Con todos los privilegios)
-            createRoleIfNotFound("ROLE_ADMIN", "Administrador total del sistema",
-                    Set.of(readPriv, writePriv, deletePriv));
+        createRoleIfNotExists("ROLE_ADMIN", "Administrador del sistema.", Set.of(read, write, delete));
+        createRoleIfNotExists("ROLE_USER", "Usuario común del sistema.", Set.of(read));
 
-            // 3. Crear Rol USER
-            createRoleIfNotFound("ROLE_USER", "Usuario estándar de la aplicación",
-                    Set.of(readPriv));
-
-            log.info("--- Seeder de Seguridad finalizado con éxito ---");
-        }
+        log.info("--- Seeder de Seguridad finalizado ---");
     }
 
     private PrivilegeEntity createPrivilegeIfNotFound(String name, String description) {
-        return privilegeRepository.findByName(name)
+
+        if (privilegeCache.containsKey(name)) {
+            return privilegeCache.get(name);
+        }
+
+        PrivilegeEntity privilege = privilegeRepository.findByName(name)
                 .orElseGet(() -> {
-                    PrivilegeEntity privilege = new PrivilegeEntity();
-                    privilege.setName(name);
-                    privilege.setDescription(description);
-                    privilege.setIsValid(true);
-                    return privilegeRepository.save(privilege);
+                    PrivilegeEntity newPrivilege = new PrivilegeEntity();
+                    newPrivilege.setName(name);
+                    newPrivilege.setDescription(description);
+                    newPrivilege.setIsActive(true);
+                    return privilegeRepository.saveAndFlush(newPrivilege);
                 });
+        privilegeCache.put(name, privilege);
+        return privilege;
     }
 
-    private void createRoleIfNotFound(String name, String description, Set<PrivilegeEntity> privileges) {
-        roleRepository.findByRoleName(name).ifPresentOrElse(
-                role -> log.info("El rol {} ya existe, omitiendo...", name),
-                () -> {
-                    RoleEntity role = new RoleEntity();
-                    role.setRoleName(name);
-                    role.setRoleDescription(description);
-                    role.setPrivileges(privileges);
-                    role.setIsValid(true);
-                    roleRepository.save(role);
-                    log.info("Rol {} creado y asociado con sus privilegios.", name);
-                }
-        );
-    }
+    private void createRoleIfNotExists(String name, String desc, Set<PrivilegeEntity> privileges) {
+        if (roleRepository.existsByRoleName(name)) {
+            log.info("Role {} ya existe", name);
+            return;
+        }
 
+        RoleEntity role = new RoleEntity();
+        role.setRoleName(name);
+        role.setRoleDescription(desc);
+        role.setPrivileges(new HashSet<>(privileges));
+        role.setIsActive(true);
+
+        roleRepository.saveAndFlush(role);
+
+        log.info("Role {} creado", name);
+    }
 }

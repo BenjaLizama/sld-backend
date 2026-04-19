@@ -6,7 +6,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -25,22 +24,6 @@ public class JwtService implements IJwtService {
     private Long jwtExpiration;
 
     /**
-     * Constructor: Genera el par de llaves RSA al arrancar el microservicio.
-     */
-    public JwtService() {
-        try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
-            KeyPair keyPair = keyPairGenerator.generateKeyPair();
-
-            this.privateKey = keyPair.getPrivate();
-            this.publicKey = keyPair.getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error fatal: No se pudieron inicializar las llaves RSA", e); // TODO: Crear excepción personalizada.
-        }
-    }
-
-    /**
      * PERMITE QUE OTROS SERVICIOS PUEDAN OBTENER LA LLAVE PÚBLICA
      */
     @Override
@@ -56,15 +39,27 @@ public class JwtService implements IJwtService {
         Map<String, Object> extraClaims = new HashMap<>();
 
         if (userDetails instanceof SecurityCredential credential) {
+            // Enviamos el UUID como String plano
             extraClaims.put("userId", credential.getId().toString());
 
-            List<String> roles = credential.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .toList();
+            List<String> privileges = new ArrayList<>();
+            List<String> roles = new ArrayList<>();
+
+            credential.getAuthorities().forEach(authority -> {
+                String auth = authority.getAuthority();
+                if (auth.startsWith("ROLE_")) {
+                    roles.add(auth);
+                } else {
+                    privileges.add(auth);
+                }
+            });
+
             extraClaims.put("roles", roles);
+            extraClaims.put("privileges", privileges);
         }
 
         return Jwts.builder()
+                .header().type("JWT").and()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -105,7 +100,8 @@ public class JwtService implements IJwtService {
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
+    @Override
+    public Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(this.publicKey)
                 .build()

@@ -68,7 +68,7 @@ public class SecurityCredential implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return credential.getIsActive();
     }
 
     // --- Métodos de ayuda para extraer Roles y Privilegios ---

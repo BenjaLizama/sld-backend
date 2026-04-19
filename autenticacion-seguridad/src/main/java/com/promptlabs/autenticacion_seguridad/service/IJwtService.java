@@ -1,5 +1,6 @@
 package com.promptlabs.autenticacion_seguridad.service;
 
+import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface IJwtService {
@@ -7,4 +8,5 @@ public interface IJwtService {
     String generateToken(UserDetails userDetails);
     String extractUsername(String token);
     boolean isTokenValid(String token, UserDetails userDetails);
+    Claims extractAllClaims(String token);
 }

@@ -1,5 +1,6 @@
 package com.promptlabs.autenticacion_seguridad.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,8 +13,8 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Setter
 @Table(name = "CREDENTIAL")
+@Getter @Setter
 public class CredentialEntity extends BaseEntity {
 
     @Column(nullable = false, unique = true)
@@ -23,6 +24,7 @@ public class CredentialEntity extends BaseEntity {
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JsonManagedReference
     @JoinTable(
             name = "credential_role",
             joinColumns = @JoinColumn(name = "credential_id"),
@@ -30,6 +32,7 @@ public class CredentialEntity extends BaseEntity {
     )
     private Set<RoleEntity> roleList;
 
-    @Column(name = "desactivated_at")
-    private Instant desactivatedAt;
+    @Column(name = "deactivated_at")
+    private Instant deactivatedAt;
+
 }
