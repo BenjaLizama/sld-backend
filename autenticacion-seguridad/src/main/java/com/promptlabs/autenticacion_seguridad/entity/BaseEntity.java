@@ -21,6 +21,7 @@ public class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
     private UUID id;
 
     @CreatedDate
@@ -30,7 +31,7 @@ public class BaseEntity {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @Column(name = "is_valid")
-    private Boolean isValid;
+    @Column(name = "is_active")
+    private Boolean isActive;
 
 }

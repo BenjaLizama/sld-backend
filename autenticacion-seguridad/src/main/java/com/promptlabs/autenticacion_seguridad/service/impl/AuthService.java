@@ -4,7 +4,6 @@ import com.promptlabs.autenticacion_seguridad.dto.AuthResponse;
 import com.promptlabs.autenticacion_seguridad.dto.LoginRequest;
 import com.promptlabs.autenticacion_seguridad.dto.RegisterRequest;
 import com.promptlabs.autenticacion_seguridad.entity.CredentialEntity;
-import com.promptlabs.autenticacion_seguridad.entity.RefreshTokenEntity;
 import com.promptlabs.autenticacion_seguridad.entity.RoleEntity;
 import com.promptlabs.autenticacion_seguridad.exception.EmailAlreadyExistsException;
 import com.promptlabs.autenticacion_seguridad.exception.RefreshTokenNotFoundException;

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.util.Set;
 
 @Entity
@@ -28,4 +29,7 @@ public class CredentialEntity extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<RoleEntity> roleList;
+
+    @Column(name = "desactivated_at")
+    private Instant desactivatedAt;
 }
