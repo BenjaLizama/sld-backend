@@ -1,9 +1,8 @@
 package com.promptlabs.usuarios_perfiles.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -28,6 +27,8 @@ public class User {
     private Gender gender;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private StudentProfile studentProfile;
 
     private String firstName;
