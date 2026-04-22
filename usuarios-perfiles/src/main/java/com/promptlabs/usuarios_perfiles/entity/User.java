@@ -1,7 +1,10 @@
 package com.promptlabs.usuarios_perfiles.entity;
 
+import com.promptlabs.usuarios_perfiles.AesEncryptor;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -41,13 +44,38 @@ public class User {
     @EqualsAndHashCode.Exclude
     private ParentProfile parentProfile;
 
+    @NonNull
+    @Convert(converter = AesEncryptor.class)
     private String firstName;
+
+    @Convert(converter = AesEncryptor.class)
     private String middleName;
+
+    @NonNull
+    @Convert(converter = AesEncryptor.class)
     private String lastName;
+
+    @Convert(converter = AesEncryptor.class)
     private String secondLastName;
+
+    @NonNull
+    @Convert(converter = AesEncryptor.class)
     private String phoneNumber;
+
+    @NonNull
+    @Convert(converter = AesEncryptor.class)
     private String address;
+
+    @NonNull
+    @Convert(converter = AesEncryptor.class)
     private LocalDate birthday;
+
+    @NonNull
+    @Convert(converter = AesEncryptor.class)
     private String nationality;
-    private LocalDate creationDate;
+
+    @NonNull
+    @Convert(converter = AesEncryptor.class)
+    private Instant creationDate;
+
 }
