@@ -5,7 +5,5 @@ public record UserResponse(
         String Name,
         String role,
         String message
-
-
 ) {
 }
