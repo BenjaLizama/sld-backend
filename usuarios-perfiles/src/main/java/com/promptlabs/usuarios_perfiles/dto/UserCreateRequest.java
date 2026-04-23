@@ -5,12 +5,12 @@ import java.util.UUID;
 
 public record UserCreateRequest(
 
-        //Datos del ms auth
-        String email,
+        //DATOS QUE VIENEN DESDE AUTH
         UUID id,
-        String rol,
+        String email,
+        String role,
 
-        //Datos personales
+        //DATOS PERSONALES PARA EL PERFIL
         String rut,
         String firstName,
         String middleName,
@@ -19,7 +19,7 @@ public record UserCreateRequest(
         String phoneNumber,
         String address,
         LocalDate birthday,
-        String nationality
-
+        String nationality,
+        Long genderId
 ) {
 }
