@@ -1,0 +1,56 @@
+name: "Calidad: Autenticación y Seguridad"
+
+on:
+  push:
+    branches: ["autenticacion-seguridad"]
+    paths:
+      - 'autenticacion-seguridad/**'
+  pull_request:
+    branches: ["autenticacion-seguridad"]
+    paths:
+      - 'autenticacion-seguridad/**'
+
+jobs:
+  checkstyle:
+    name: "Analisis de estilo de codigo"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run Checkstyle
+        run: mvn -f autenticacion-seguridad/pom.xml checkstyle:check
+
+  tests-y-cobertura:
+    name: "Tests unitarios, de Integración y Jacoco"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run Tests and Coverage
+        run: |
+          mvn -f autenticacion-seguridad/pom.xml clean test jacoco:report \
+          -Dcheckstyle.skip \
+          -Dprotobuf.skip=true \
+          -Dskip.protobuf=true
+
+      - name: Upload Jacoco Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-cobertura
+          path: autenticacion-seguridad/target/site/jacoco/
