@@ -15,8 +15,8 @@ import java.time.Instant;
 @AllArgsConstructor
 @Getter @Setter
 @Table(name = "SESSION", indexes = {
-        @Index(name = "idx_session_token", columnList = "refreshTokenHash"),
-        @Index(name = "idx_session_device", columnList = "deviceId")
+        @Index(name = "idx_session_refresh_token", columnList = "refresh_token_hash"),
+        @Index(name = "idx_session_credential_device", columnList = "credential_id, deviceId")
 })
 public class SessionEntity extends BaseEntity {
 
@@ -39,7 +39,7 @@ public class SessionEntity extends BaseEntity {
     @Column(name = "ip_address")
     private String ipAddress;
 
-    @Column(name = "user_agent")
+    @Column(name = "user_agent", length = 512)
     private String userAgent;
 
 }

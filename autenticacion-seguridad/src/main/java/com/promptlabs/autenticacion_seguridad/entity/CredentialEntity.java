@@ -13,8 +13,10 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "CREDENTIAL")
 @Getter @Setter
+@Table(name = "CREDENTIAL", indexes = {
+        @Index(name = "idx_credential_email", columnList = "email", unique = true)
+})
 public class CredentialEntity extends BaseEntity {
 
     @Column(nullable = false, unique = true)
