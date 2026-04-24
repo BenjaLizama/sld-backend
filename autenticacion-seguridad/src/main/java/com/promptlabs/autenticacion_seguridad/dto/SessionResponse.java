@@ -6,4 +6,5 @@ public record SessionResponse(
         String rawRefreshToken,
         Instant expiryDate,
         String deviceName
-) {}
+) {
+}

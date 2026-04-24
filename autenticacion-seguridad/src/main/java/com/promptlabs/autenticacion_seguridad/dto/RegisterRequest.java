@@ -8,7 +8,10 @@ import jakarta.validation.constraints.Size;
 public record RegisterRequest(
 
         @NotBlank(message = "El correo no puede estar vacío.")
-        @Email(message = "El formato del correo no es válido.")
+        @Email(
+                message = "Formato de correo inválido.",
+                regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+        )
         String email,
 
         @NotBlank(message = "La contraseña es obligatoria.")

@@ -14,4 +14,5 @@ public record LoginWrapper(
         @NotNull
         @Valid
         SessionRequest session
-) {}
+) {
+}

@@ -1,14 +1,16 @@
 package com.promptlabs.autenticacion_seguridad.dto;
 
-import jakarta.validation.constraints.Email;
+import com.promptlabs.autenticacion_seguridad.enums.LoginProvider;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record LoginRequest(
 
-        @NotBlank(message = "El correo es obligatorio.")
-        @Email(message = "Formato de correo inválido.")
-        String email,
+        @NotBlank(message = "El identificador (email o token) es obligatorio.")
+        String identifier,
 
-        @NotBlank(message = "La contraseña es obligatoria.")
-        String password
+        String password, // Opcional: Obligatorio para local, nulo para GOOGLE
+
+        @NotNull(message = "El proveedor es obligatorio.")
+        LoginProvider provider
 ) {}
