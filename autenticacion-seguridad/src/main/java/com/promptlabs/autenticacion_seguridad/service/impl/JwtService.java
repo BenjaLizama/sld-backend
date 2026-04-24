@@ -101,6 +101,14 @@ public class JwtService implements IJwtService {
     }
 
     @Override
+    public long getRemainingTtlSeconds(String token) {
+        Date expiration = extractExpiration(token);
+        long remainingMs = expiration.getTime() - System.currentTimeMillis();
+        return Math.max(0, remainingMs / 1000);
+    }
+
+
+    @Override
     public Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(this.publicKey)

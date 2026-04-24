@@ -11,9 +11,6 @@ import com.promptlabs.autenticacion_seguridad.security.SecurityCredential;
 import com.promptlabs.autenticacion_seguridad.service.IAuthService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +24,7 @@ public class AuthService implements IAuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
-    private final CustomUserDetailsService userDetailsService;
+    private final AuthStrategyManager authStrategyManager;
     private final SessionService sessionService;
 
     /**
@@ -37,20 +33,15 @@ public class AuthService implements IAuthService {
     @Override
     @Transactional
     public AuthResponse login(LoginWrapper wrapper) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(wrapper.login().email(), wrapper.login().password())
-        );
+        // 1. La estrategia valida según el provider y nos da la entidad
+        CredentialEntity credential = authStrategyManager.executeStrategy(wrapper.login());
 
-        SecurityCredential user = (SecurityCredential) userDetailsService.loadUserByUsername(wrapper.login().email());
+        // 2. Convertimos a SecurityCredential para el JWT (como ya lo hacías)
+        SecurityCredential userDetails = new SecurityCredential(credential);
 
-        if (!user.isEnabled()) {
-            throw new DisabledException("La cuenta se encuentra desactivada.");
-        }
-
-        String accessToken = jwtService.generateToken(user);
-
-        // Crear sesión multidispositivo
-        SessionResponse session = sessionService.createSession(user.getId(), wrapper.session());
+        // 3. Generamos tokens y sesión
+        String accessToken = jwtService.generateToken(userDetails);
+        SessionResponse session = sessionService.createSession(credential.getId(), wrapper.session());
 
         return new AuthResponse(accessToken, session.rawRefreshToken(), session.expiryDate());
     }

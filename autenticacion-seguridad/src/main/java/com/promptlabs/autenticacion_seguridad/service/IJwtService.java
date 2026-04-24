@@ -9,4 +9,5 @@ public interface IJwtService {
     String extractUsername(String token);
     boolean isTokenValid(String token, UserDetails userDetails);
     Claims extractAllClaims(String token);
+    long getRemainingTtlSeconds(String token);
 }
