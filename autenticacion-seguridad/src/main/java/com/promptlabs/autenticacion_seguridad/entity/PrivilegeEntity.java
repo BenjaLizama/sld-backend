@@ -27,5 +27,4 @@ public class PrivilegeEntity extends BaseEntity {
 
     @ManyToMany(mappedBy = "privileges")
     private Set<RoleEntity> roles = new HashSet<>();
-
 }

@@ -18,7 +18,7 @@ import java.time.Instant;
         @Index(name = "idx_session_refresh_token_hash", columnList = "refresh_token_hash"),
         @Index(name = "idx_session_credential_device", columnList = "credential_id, device_id")
 })
-public class SessionEntity extends BaseEntity {
+public class UserSessionEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "credential_id", nullable = false)
