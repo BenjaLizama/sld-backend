@@ -150,6 +150,28 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 13. Intento de uso de refresh token desde un dispositivo distinto al de origen.
+     */
+    // antes generico 500, ahora 403
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<StandarErrorResponse> handleSecurityException(SecurityException ex, HttpServletRequest request) {
+        log.warn("Violación de seguridad de sesión en {}: {}", request.getRequestURI(), ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(errorMapper.toAccessDeniedResponse(ex, request.getRequestURI()));
+    }
+
+    /**
+     * 14. Proveedor de autenticación no implementado o no soportado.
+     */
+    @ExceptionHandler(UnsupportedAuthenticationProviderException.class)
+    public ResponseEntity<StandarErrorResponse> handleUnsupportedProvider(UnsupportedAuthenticationProviderException ex, HttpServletRequest request) {
+        log.warn("Estrategia de autenticación no disponible en {}: {}", request.getRequestURI(), ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(errorMapper.toStrategyNotImplementedResponse(ex, request.getRequestURI()));
+    }
+
+    /**
      * 0. Error genérico de servidor.
      */
     @ExceptionHandler(Exception.class)
