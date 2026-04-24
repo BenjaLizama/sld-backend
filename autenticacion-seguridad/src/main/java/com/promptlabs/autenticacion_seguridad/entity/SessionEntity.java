@@ -15,8 +15,8 @@ import java.time.Instant;
 @AllArgsConstructor
 @Getter @Setter
 @Table(name = "SESSION", indexes = {
-        @Index(name = "idx_session_refresh_token", columnList = "refresh_token_hash"),
-        @Index(name = "idx_session_credential_device", columnList = "credential_id, deviceId")
+        @Index(name = "idx_session_refresh_token_hash", columnList = "refresh_token_hash"),
+        @Index(name = "idx_session_credential_device", columnList = "credential_id, device_id")
 })
 public class SessionEntity extends BaseEntity {
 
