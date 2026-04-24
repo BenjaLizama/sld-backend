@@ -15,7 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter @Setter
 @Table(name = "CREDENTIAL", indexes = {
-        @Index(name = "idx_credential_email", columnList = "email", unique = true)
+        @Index(name = "idx_credential_email", columnList = "email")
 })
 public class CredentialEntity extends BaseEntity {
 
