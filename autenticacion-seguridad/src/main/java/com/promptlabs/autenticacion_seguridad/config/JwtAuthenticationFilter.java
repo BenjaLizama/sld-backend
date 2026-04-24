@@ -2,6 +2,7 @@ package com.promptlabs.autenticacion_seguridad.config;
 
 import com.promptlabs.autenticacion_seguridad.service.impl.CustomUserDetailsService;
 import com.promptlabs.autenticacion_seguridad.service.impl.JwtService;
+import com.promptlabs.autenticacion_seguridad.service.impl.TokenBlacklistService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,6 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
+    private final TokenBlacklistService tokenBlacklistService;
 
 
     @Override
@@ -44,6 +46,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 2. Extraemos el token (quitando "bearer")
         jwt = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwt);
+
+        // se consulta a redis antes de validar el token
+        // si el token está en la blacklist, se rechaza con 401
+        if (tokenBlacklistService.isBlacklisted(jwt)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Token revocado. Por favor inicia sesión nuevamente.\"}");
+            return;
+        }
+
 
         // 3. Si el email existe y el usuario NO está autenticado en el contexto actual.
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -32,7 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**").permitAll() // Libertad total
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/session/refresh-token").permitAll()
-                        .requestMatchers("/api/v1/session/**").hasAnyAuthority("ROLE_USER", "READ_PRIVILEGES")
+                        .requestMatchers("/api/v1/session/**").hasAnyAuthority("ROLE_USER", "READ_PRIVILEGE") // fix: antes: READ_PRIVILEGES, ahora: sin s pq así es en RoleAndPrevilegeSeeder
                         .anyRequest().authenticated()
                 )
                 // Evita la redirección HTML
@@ -44,8 +46,8 @@ public class SecurityConfig {
                 // Importante para H2: Permite que la consola se cargue en un Frame
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
 
-        // Habilitar login basico por si se necesita probar algo rapido
-        //.formLogin(Customizer.withDefaults());
+                // Habilitar login basico por si se necesita probar algo rapido
+                //.formLogin(Customizer.withDefaults());
         return http.build();
     }
 
