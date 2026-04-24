@@ -26,7 +26,7 @@ public class RoleEntity extends BaseEntity {
     @ManyToMany(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinTable(
-            name = "role_privilege",
+            name = "role_privileges",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "privilege_id")
     )
