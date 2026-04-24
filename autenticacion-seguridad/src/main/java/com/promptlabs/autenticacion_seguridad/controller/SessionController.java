@@ -1,6 +1,7 @@
 package com.promptlabs.autenticacion_seguridad.controller;
 
 import com.promptlabs.autenticacion_seguridad.dto.AuthResponse;
+import com.promptlabs.autenticacion_seguridad.dto.ChangePasswordRequest;
 import com.promptlabs.autenticacion_seguridad.dto.RefreshTokenWrapper;
 import com.promptlabs.autenticacion_seguridad.service.impl.SessionService;
 import jakarta.validation.Valid;
@@ -21,15 +22,22 @@ public class SessionController {
     }
 
     @PatchMapping("/deactivate")
-    public ResponseEntity<?> deactivate() {
+    public ResponseEntity<Void> deactivate() {
         sessionService.deactivateSelf();
-        return ResponseEntity.ok("Cuenta desactivada con exito!");
+        return ResponseEntity.noContent().build();
     }
 
-    // TODO: ELIMINAR ESTE CONTROLADOR, ES SOLO PARA PRUEBAS DE ROLES O PRIVILEGIOS.
-    @GetMapping("/me")
-    public ResponseEntity<?> getMyActiveSession() {
-        return ResponseEntity.ok("Lista de sesiones");
+    @PostMapping("/change-password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        sessionService.changePassword(request);
+        return ResponseEntity.noContent().build();
+    }
+
+    // extrae el token de header autorization y se lo pasa al service
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        sessionService.logout();
+        return ResponseEntity.noContent().build();
     }
 
 }
