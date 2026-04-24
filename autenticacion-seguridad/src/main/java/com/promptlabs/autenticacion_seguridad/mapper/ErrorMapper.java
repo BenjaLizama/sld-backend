@@ -11,7 +11,6 @@ import java.util.Map;
 
 @Component
 public class ErrorMapper {
-    // TODO: ORGANIZAR RESPUESTAS DE ERRORES POR CODIGO.
 
     /**
      * BASE PARA EL RESTO DE MAPPERS
@@ -24,9 +23,10 @@ public class ErrorMapper {
                 .timestamp(System.currentTimeMillis());
     }
 
-    // ==========================================================
-    // MÉTODOS PÚBLICOS
-    // ==========================================================
+
+    // ==========================================
+    //       ERROR: 400 (BAD REQUEST)
+    // ==========================================
 
     public StandarErrorResponse toValidationResponse(MethodArgumentNotValidException ex, String path) {
         Map<String, String> errors = new HashMap<>();
@@ -50,6 +50,27 @@ public class ErrorMapper {
                 .build();
     }
 
+    public StandarErrorResponse toMalformedRequestResponse(Exception ex, String path) {
+        return buildBaseError(HttpStatus.BAD_REQUEST, path)
+                .code("ERR_MALFORMED_001")
+                .message("El formato de la petición es inválido. Revisa la estructura de los datos.")
+                .developerMessage(ex.getMessage())
+                .build();
+    }
+
+    public StandarErrorResponse toUnsupportedProviderResponse(Exception ex, String path) {
+        return buildBaseError(HttpStatus.BAD_REQUEST, path)
+                .code("AUTH_PROVIDER_001")
+                .message("El proveedor de autenticación no es válido o no está soportado.")
+                .developerMessage(ex.getMessage())
+                .build();
+    }
+
+
+    // ==========================================
+    //       ERROR: 401 (UNAUTHORIZED)
+    // ==========================================
+
     public StandarErrorResponse toAuthResponse(Exception ex, String path) {
         return buildBaseError(HttpStatus.UNAUTHORIZED, path)
                 .code("AUTH_001")
@@ -58,21 +79,10 @@ public class ErrorMapper {
                 .build();
     }
 
-    public StandarErrorResponse toSystemErrorResponse(Exception ex, String path) {
-        return buildBaseError(HttpStatus.INTERNAL_SERVER_ERROR, path)
-                .code("SYS_500")
-                .message("Ocurrió un error inesperado en el servidor. Por favor, intenta más tarde.")
-                .developerMessage(ex.toString())
-                .build();
-    }
 
-    public StandarErrorResponse toMalformedRequestResponse(Exception ex, String path) {
-        return buildBaseError(HttpStatus.BAD_REQUEST, path)
-                .code("ERR_MALFORMED_001")
-                .message("El formato de la petición es inválido. Revisa la estructura de los datos.")
-                .developerMessage(ex.getMessage())
-                .build();
-    }
+    // ==========================================
+    //         ERROR: 403 (FORBIDDEN)
+    // ==========================================
 
     public StandarErrorResponse toAccessDeniedResponse(Exception ex, String path) {
         return buildBaseError(HttpStatus.FORBIDDEN, path)
@@ -82,6 +92,19 @@ public class ErrorMapper {
                 .build();
     }
 
+    public StandarErrorResponse toAccountDisabledResponse(Exception ex, String path) {
+        return buildBaseError(HttpStatus.FORBIDDEN, path)
+                .code("ERR_FORBIDDEN_002")
+                .message("La cuenta se encuentra deshabilitada.")
+                .developerMessage(ex.getMessage())
+                .build();
+    }
+
+
+    // ==========================================
+    //     ERROR: 405 (METHOD NOT ALLOWED)
+    // ==========================================
+
     public StandarErrorResponse toMethodNotSupportedResponse(Exception ex, String path) {
         return buildBaseError(HttpStatus.METHOD_NOT_ALLOWED, path)
                 .code("ERR_METHOD_001")
@@ -90,11 +113,29 @@ public class ErrorMapper {
                 .build();
     }
 
-    public StandarErrorResponse toAccountDisabledResponse(Exception ex, String path) {
-        return buildBaseError(HttpStatus.FORBIDDEN, path)
-                .code("ERR_FORBIDDEN_002")
-                .message("La cuenta se encuentra deshabilitada.")
-                .developerMessage(ex.getMessage())
+
+    // ==========================================
+    //    ERROR: 422 (UNPROCESSABLE ENTITY)
+    // ==========================================
+
+    public StandarErrorResponse toStrategyNotImplementedResponse(Exception ex, String path) {
+        return buildBaseError(HttpStatus.UNPROCESSABLE_CONTENT, path)
+                .code("AUTH_STRATEGY_001")
+                .message("Este método de inicio de sesión aún no está disponible.")
+                .developerMessage("Se encontró el proveedor pero no hay una estrategia activa: " + ex.getMessage())
+                .build();
+    }
+
+
+    // ==========================================
+    //     ERROR: 500 (INTERNAL SERVER ERROR)
+    // ==========================================
+
+    public StandarErrorResponse toSystemErrorResponse(Exception ex, String path) {
+        return buildBaseError(HttpStatus.INTERNAL_SERVER_ERROR, path)
+                .code("SYS_500")
+                .message("Ocurrió un error inesperado en el servidor. Por favor, intenta más tarde.")
+                .developerMessage(ex.toString())
                 .build();
     }
 
