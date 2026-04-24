@@ -1,7 +1,6 @@
-# Propiedades de aplicación | SOLO PARA DESARROLLO
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb;TIME ZONE=UTC;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -11,10 +10,28 @@ spring:
       enabled: true
       settings:
         web-allow-others: true
-    security:
-      user:
-        name: admin
-        password: admin123
-    sql:
-      init:
-        mode: always
+  security:
+    user:
+      name: admin
+      password: admin123
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: always
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+app:
+  cleanup:
+    session:
+      cron: "0 0 * * * ?"
+    account:
+      cron: "0 0 3 * * ?"
+      grace-period-days: 30
