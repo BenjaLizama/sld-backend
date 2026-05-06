@@ -1,6 +1,6 @@
 package com.promptlabs.usuarios_perfiles.entity;
 
-import com.promptlabs.usuarios_perfiles.AesEncryptor;
+import com.promptlabs.usuarios_perfiles.config.AesEncryptor;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @Table(name = "usuarios")
 @Entity
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +19,7 @@ public class User {
     @Id
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String rut;
 
     @Column(nullable = false, unique = true)
@@ -44,38 +45,29 @@ public class User {
     @EqualsAndHashCode.Exclude
     private ParentProfile parentProfile;
 
-    @NonNull
     @Convert(converter = AesEncryptor.class)
     private String firstName;
 
     @Convert(converter = AesEncryptor.class)
     private String middleName;
 
-    @NonNull
     @Convert(converter = AesEncryptor.class)
     private String lastName;
 
     @Convert(converter = AesEncryptor.class)
     private String secondLastName;
 
-    @NonNull
     @Convert(converter = AesEncryptor.class)
     private String phoneNumber;
 
-    @NonNull
     @Convert(converter = AesEncryptor.class)
     private String address;
 
-    @NonNull
-    @Convert(converter = AesEncryptor.class)
     private LocalDate birthday;
 
-    @NonNull
     @Convert(converter = AesEncryptor.class)
     private String nationality;
 
-    @NonNull
-    @Convert(converter = AesEncryptor.class)
     private Instant creationDate;
 
 }
