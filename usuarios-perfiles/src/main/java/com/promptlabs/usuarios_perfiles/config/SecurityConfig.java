@@ -16,13 +16,22 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/api/v1/internal/**").permitAll()
+                        .requestMatchers("/api/v1/users/**").permitAll()
+                        .requestMatchers("/api/v1/students/**").permitAll()
+                        .requestMatchers("/api/v1/parents/**").permitAll()
+                        .requestMatchers("/api/v1/families/**").permitAll()
+                        .requestMatchers("/api/v1/teachers/**").permitAll()
+                        // 👇 AGREGA ESTA LÍNEA (EL SALVAVIDAS)
+                        .requestMatchers("/error").permitAll()
+
                         .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
+                // 4. Permitimos los iframes para que la consola H2 se pueda renderizar
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+
         return httpSecurity.build();
     }
-
 }
