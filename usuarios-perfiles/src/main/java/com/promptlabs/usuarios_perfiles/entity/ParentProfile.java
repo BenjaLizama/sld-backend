@@ -3,6 +3,7 @@ package com.promptlabs.usuarios_perfiles.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.UUID;
@@ -10,6 +11,7 @@ import java.util.UUID;
 @Table(name = "parents_profiles")
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParentProfile {
@@ -23,10 +25,9 @@ public class ParentProfile {
     private User user;
 
     //considerar cambiar a un diccionario
-    @Column(nullable = false)
     private String educationLevel;
 
-    @Column(nullable = false)
+
     private Boolean isSupporter;
 
     //AGREGAR PARENTESCO
