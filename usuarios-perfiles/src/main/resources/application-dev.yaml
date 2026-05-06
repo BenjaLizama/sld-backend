@@ -17,9 +17,13 @@ spring:
       password: admin123
   jpa:
     show-sql: true
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
+
   sql:
     init:
       mode: always
