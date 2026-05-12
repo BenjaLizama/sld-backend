@@ -9,7 +9,7 @@ public class ParentProfileStrategy implements ProfileCreationStrategy {
 
     @Override
     public String getRole() {
-        return "PARENT";
+        return "ROLE_PARENT";
     }
 
     @Override

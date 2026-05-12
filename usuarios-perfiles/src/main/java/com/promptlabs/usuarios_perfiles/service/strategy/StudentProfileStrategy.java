@@ -10,7 +10,7 @@ public class StudentProfileStrategy implements ProfileCreationStrategy {
 
     @Override
     public String getRole() {
-        return "STUDENT";
+        return "ROLE_STUDENT";
     }
 
     @Override

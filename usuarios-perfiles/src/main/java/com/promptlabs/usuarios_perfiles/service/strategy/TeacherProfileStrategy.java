@@ -9,7 +9,7 @@ public class TeacherProfileStrategy implements ProfileCreationStrategy {
 
     @Override
     public String getRole() {
-        return "TEACHER";
+        return "ROLE_USER";
     }
 
     @Override
