@@ -1,5 +1,6 @@
 package com.promptlabs.autenticacion_seguridad.service.impl;
 
+import com.promptlabs.autenticacion_seguridad.config.RabbitMQConfig;
 import com.promptlabs.autenticacion_seguridad.dto.*;
 import com.promptlabs.autenticacion_seguridad.entity.CredentialEntity;
 import com.promptlabs.autenticacion_seguridad.entity.RoleEntity;
@@ -11,6 +12,7 @@ import com.promptlabs.autenticacion_seguridad.security.SecurityCredential;
 import com.promptlabs.autenticacion_seguridad.service.IAuthService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,7 @@ public class AuthService implements IAuthService {
     private final JwtService jwtService;
     private final AuthStrategyManager authStrategyManager;
     private final SessionService sessionService;
+    private final RabbitTemplate rabbitTemplate;
 
     /**
      * Inicio de sesión
@@ -66,6 +69,28 @@ public class AuthService implements IAuthService {
         credential.setRoleList(Set.of(defaultRole));
 
         CredentialEntity savedCredential = credentialRepository.save(credential);
+
+        try {
+            // Obtenemos el nombre del rol (asumiendo que tiene al menos uno)
+            String roleName = savedCredential.getRoleList().iterator().next().getRoleName();
+
+            UserCreatedEvent event = new UserCreatedEvent(
+                    savedCredential.getId(),
+                    savedCredential.getEmail(),
+                    roleName
+            );
+
+            rabbitTemplate.convertAndSend(
+                    RabbitMQConfig.EXCHANGE,
+                    RabbitMQConfig.ROUTING_KEY,
+                    event
+            );
+            System.out.println("🚀 Evento enviado a RabbitMQ para: " + savedCredential.getEmail());
+
+        } catch (Exception e) {
+
+            System.err.println("❌ Error enviando evento a RabbitMQ: " + e.getMessage());
+        }
         SecurityCredential userDetails = new SecurityCredential(savedCredential);
 
         String accessToken = jwtService.generateToken(userDetails);
