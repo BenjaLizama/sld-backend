@@ -6,10 +6,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/users") // Endpoint público/frontend
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserProfileController {
 
@@ -24,8 +25,20 @@ public class UserProfileController {
             userService.completarPerfilBase(userId, request);
             return ResponseEntity.ok("Perfil base actualizado con éxito");
         } catch (RuntimeException e) {
-            // Si no encuentra el ID, devolvemos un 404 Not Found
             return ResponseEntity.status(404).body(e.getMessage());
         }
+    }
+
+    @PutMapping("/{userId}/profile-update")
+    public ResponseEntity<String> updateProfile(
+            @RequestHeader("Authorization") String token,
+            @PathVariable UUID userId,
+            @RequestBody Map<String, Object> body
+    ) {
+        System.out.println("llamada correcta");
+
+        userService.actualizarPerfilEspecifico(userId, token, body);
+
+        return ResponseEntity.ok("Procesado correctamente");
     }
 }
