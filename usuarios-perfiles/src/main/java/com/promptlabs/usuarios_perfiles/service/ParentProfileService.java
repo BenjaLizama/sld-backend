@@ -17,20 +17,17 @@ public class ParentProfileService {
 
     @Transactional
     public void updateParentInfo(UUID userId, ParentInformationUpdateRequest request) {
-
-        // Buscamos el perfil usando el ID del usuario
         ParentProfile profile = parentProfileRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Perfil de apoderado no encontrado para el usuario: " + userId));
+                .orElseGet(() -> {
+                    ParentProfile newProfile = new ParentProfile();
+                    newProfile.setId(userId);
+                    return newProfile;
+                });
 
-        // Actualizamos los datos
         profile.setEducationLevel(request.educationLevel());
         profile.setIsSupporter(request.isSupporter());
 
-        // Guardamos
         parentProfileRepository.save(profile);
 
-        System.out.println("👨‍👩‍👧 Información de apoderado actualizada para: " + userId);
     }
-
-
 }
