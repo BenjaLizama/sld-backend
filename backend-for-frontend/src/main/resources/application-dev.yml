@@ -3,10 +3,10 @@ server:
 
 services:
   auth-service:
-    url: http://localhost:8081
+    url: http://autenticacion-seguridad:8081  # El nombre que pusiste en el compose
 
   user-service:
-    url: http://localhost:8083
+    url: http://usuarios-perfiles:8083        # El nombre que pusiste en el compose
 
 logging:
   level:
