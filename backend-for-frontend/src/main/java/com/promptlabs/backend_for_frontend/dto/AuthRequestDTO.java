@@ -19,6 +19,8 @@ public record AuthRequestDTO(
                 regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).*$",
                 message = "La contraseña debe contener al menos un número, una mayúscula, una minúscula y un carácter especial."
         )
-        String password
+        String password,
+
+        String role
 ) {
 }
