@@ -24,6 +24,11 @@ public class RegistroService {
         );
 
         Map<String, Object> authRes = authClient.registrarUsuario(headerDeviceId, bodyParaAuth);
+        try {
+            Thread.sleep(2000); // Retrasa la ejecución 2 segundos (2000 ms)
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
         String token = (String) authRes.get("accessToken");
         String bearerToken = "Bearer " + token;
 
