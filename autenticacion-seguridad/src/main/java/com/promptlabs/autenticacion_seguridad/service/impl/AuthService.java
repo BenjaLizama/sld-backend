@@ -59,14 +59,25 @@ public class AuthService implements IAuthService {
             throw new EmailAlreadyExistsException("El correo electrónico ya está registrado");
         }
 
-        RoleEntity defaultRole = roleRepository.findByRoleName("ROLE_USER")
-                .orElseThrow(() -> new RoleNotFoundException("Error crítico: ROLE_USER no existe."));
+        String requestedRole = registerWrapper.register().role();
+        if (requestedRole == null || requestedRole.isEmpty()) {
+            requestedRole = "ROLE_USER";
+        } else {
+            requestedRole = requestedRole.toUpperCase();
+            if (!requestedRole.startsWith("ROLE_")) {
+                requestedRole = "ROLE_" + requestedRole;
+            }
+        }
+
+        final String finalRoleName = requestedRole;
+        RoleEntity role = roleRepository.findByRoleName(finalRoleName)
+                .orElseThrow(() -> new RoleNotFoundException("El rol " + finalRoleName + " no existe."));
 
         CredentialEntity credential = new CredentialEntity();
         credential.setEmail(registerWrapper.register().email());
         credential.setPassword(passwordEncoder.encode(registerWrapper.register().password()));
         credential.setIsActive(true);
-        credential.setRoleList(Set.of(defaultRole));
+        credential.setRoleList(Set.of(role)); // Asignamos el rol dinámico
 
         CredentialEntity savedCredential = credentialRepository.save(credential);
 
@@ -85,7 +96,6 @@ public class AuthService implements IAuthService {
                     RabbitMQConfig.ROUTING_KEY,
                     event
             );
-            System.out.println("🚀 Evento enviado a RabbitMQ para: " + savedCredential.getEmail());
 
         } catch (Exception e) {
 
