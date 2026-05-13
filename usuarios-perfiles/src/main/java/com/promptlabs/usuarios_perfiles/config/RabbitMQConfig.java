@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 
 @Configuration
 public class RabbitMQConfig {
@@ -18,23 +19,27 @@ public class RabbitMQConfig {
     public static final String ROUTING_KEY = "user_routing_key";
 
     @Bean
-    public Queue queue() { return new Queue(QUEUE); }
+    public Queue queue() {
+        return new Queue(QUEUE, true);
+    }
 
     @Bean
-    public DirectExchange exchange() { return new DirectExchange(EXCHANGE); }
+    public DirectExchange exchange() {
+        return new DirectExchange(EXCHANGE);
+    }
 
     @Bean
     public Binding binding(Queue queue, DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
     }
     @Bean
-    public JacksonJsonMessageConverter messageConverter() {
+    public MessageConverter messageConverter() {
         return new JacksonJsonMessageConverter();
     }
 
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,
-                                         JacksonJsonMessageConverter messageConverter) {
+                                         MessageConverter messageConverter) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(messageConverter);
         return rabbitTemplate;
