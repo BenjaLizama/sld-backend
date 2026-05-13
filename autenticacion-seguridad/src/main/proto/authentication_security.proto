@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package promptlabs.autenticacion_seguridad;
+
+option java_multiple_files = true;
+option java_package = "com.promptlabs.autenticacion_seguridad.grpc";
+option java_outer_classname = "AuthenticationSecurityProto";
+
+message AuthHealthRequest {
+  string requester = 1;
+}
+
+message AuthHealthResponse {
+  string service = 1;
+  string status = 2;
+}
+
+service AuthenticationSecurityHealth {
+  rpc Check(AuthHealthRequest) returns (AuthHealthResponse);
+}

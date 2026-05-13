@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package promptlabs.usuarios_perfiles;
+
+option java_multiple_files = true;
+option java_package = "com.promptlabs.usuarios_perfiles.grpc";
+option java_outer_classname = "UserProfilesProto";
+
+message UserProfilesHealthRequest {
+  string requester = 1;
+}
+
+message UserProfilesHealthResponse {
+  string service = 1;
+  string status = 2;
+}
+
+service UserProfilesHealth {
+  rpc Check(UserProfilesHealthRequest) returns (UserProfilesHealthResponse);
+}
