@@ -31,13 +31,16 @@ public class RoleAndPrivilegeSeeder implements CommandLineRunner {
     public void run(String @NonNull ... args) {
         log.info("--- Iniciando Seeder de Seguridad ---");
 
-        // Crear privilegios SIEMPRE (porque el método ya evita duplicados)
         PrivilegeEntity read = createPrivilegeIfNotFound("READ_PRIVILEGE", "Leer datos.");
         PrivilegeEntity write = createPrivilegeIfNotFound("WRITE_PRIVILEGE", "Crear/editar datos.");
         PrivilegeEntity delete = createPrivilegeIfNotFound("DELETE_PRIVILEGE", "Eliminar datos.");
 
         createRoleIfNotExists("ROLE_ADMIN", "Administrador del sistema.", Set.of(read, write, delete));
         createRoleIfNotExists("ROLE_USER", "Usuario común del sistema.", Set.of(read));
+        // Roles de la escuela
+        createRoleIfNotExists("ROLE_TEACHER", "Perfil de Profesor.", Set.of(read, write));
+        createRoleIfNotExists("ROLE_STUDENT", "Perfil de Estudiante.", Set.of(read));
+        createRoleIfNotExists("ROLE_PARENT", "Perfil de Apoderado.", Set.of(read));
 
         log.info("--- Seeder de Seguridad finalizado ---");
     }
