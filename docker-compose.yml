@@ -70,17 +70,6 @@ services:
     networks:
       - sld-network
 
-  frontend-componentes:
-    build:
-      context: ./frontend-componentes
-    container_name: sld-frontend
-    depends_on:
-      - backend-for-frontend
-    ports:
-      - "5173:80"
-    networks:
-      - sld-network
-
 networks:
   sld-network:
     driver: bridge
