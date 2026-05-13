@@ -1,0 +1,75 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: sld-redis
+    networks:
+      - sld-network
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: sld-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - sld-network
+
+  autenticacion-seguridad:
+    build:
+      context: ./autenticacion-seguridad
+    container_name: sld-auth
+    depends_on:
+      - redis
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DEV_PORT: 8081
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      RSA_PRIVATE: "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDnVkCF+omyWdQHPKGtnsYjdJh3h/Iy5GWL87VaLbrNXdcheMZ+UJ4lK0kVnS7qg0U+/5g/hcwskEDAV4wsowGzH7xErkS9xvo4X57BcbZ4gdLBB5y1ods8ZUScxYcEe7uSkYmLGW8ROQWWYdUNEKmZj47vvr76ymEm4EHt/ah3vOBrPua2Cx9dv5DsrMMzacxVNiXb6MgcWVC6WlLoEE0eaMCeyxArQ3TE5D3MuGLZ9/ZlkIlXyyRYsLJjRs0auSE089McgTa+qdlwO8QyMy5Gdxm2JRTZ1e7+A65evtG3WEO+sVXI9SDjMYkgXj6aZ2A7m88Iu26V1sD5Iwqay+ZBAgMBAAECggEACDl+zcSchKTA7wjuzpdof/YzPXyt1bVdDt65Qd2CWK7PaTc8B12iYbvqO0R9WIUWPykjJo8BNUxjoPL73tJkyxODxAVWGFEssDhmEoaScDJdZdN5dNOuUbVf/Rrgs/4aKxnVhAaBdmFKm5Aa3P4MqZL7B/cGHzB2x8UNUwLDrI4PMR6jNnMNUhMJ7/uOeJQjPBVCcU0pbQlUIRXuv0/stC5/LY9nBqcUbHJAhbT5EbdiDJCEasV5i3lMFHOR/SNo9PAL1ayS1GKtkK/xOnOqvvSO9Inw2U9d2ceEJxiJgLrWcaIuGcIF2iFx/7ix5aSxgo6MNe9LcFZ39IXqLOBiiQKBgQD/1dQuUZuALtFQmzxgCa/SEuzxtVPe72NgnlUtts7mZq859hmBmSCf6M7MeUHgzW+Qx+xwlDXtjMRoHAmdNB7ueSks61lLBdpoXgVs00UxLUAd4Lv1mM7+D1U2UxannLvXGdRrsqwwUhMfY2icadH34eaGVXrx8grGHp68AgW8kwKBgQDnfGKNpJJdy8mNjiS/ACDWaqoNahYKHX7t3dOAd/BQgxMIFL480hHLBfr3l9u5WSxZwWWU/yUcUsCcRRR8g1hD1dSsJ+HEgJw/QmPWVrNn0zF//4CzqZnSQyHXWLXxRWxkPfR0wFofWutrJeuRO4GBC0D0tJ/sh3XPBA/8i79qWwKBgQCy7M6fsm2J4bR8poU8OaogxyG2DnZhBZXAPhweg6sCUrCcXfUKwZiingT71pZvbd5oKJrBRbbNs9StZ2aF7qzvZgeZJeRmZuqQcaljqgLLWPVtr/5kzwF9iCW1f7jpcuGgl60LwYNRrCU5n6HLOushbXl3XBNHYVuNol6r6NIwRwKBgAnSqGf0TNW4GRRtrLeCLOKMYizxjH/fYox7dkckT8lK1proLm5sR58C4PRyuDs0QoKIh2P8M7nw9QVslQL3m949C6pGgvkQsBCrI4tr4G8OcjJJSE/XaZSXjq8Rr57OYFwcmOv/YZOlCwpf8JAYI1WzgY0gwQyLbv9a38bKs1OzAoGAYh0y990jfCbmOYk8jqKr/QT1Ne12ZcfXb4icH3dxfU4wDs+GSoRZbpc+u9YWOwJVpQJmAvXk4YFjP2YueexVd36GvpXVhHTjd2GaOlrXENFBkz43PkmDwBnnby98ilWSs1eeXHXpTOj948nye+bFOo8zrB3d9kH4D5C8nU9gZuE="
+      RSA_PUBLIC: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA51ZAhfqJslnUBzyhrZ7GI3SYd4fyMuRli/O1Wi26zV3XIXjGflCeJStJFZ0u6oNFPv+YP4XMLJBAwFeMLKMBsx+8RK5Evcb6OF+ewXG2eIHSwQectaHbPGVEnMWHBHu7kpGJixlvETkFlmHVDRCpmY+O776++sphJuBB7f2od7zgaz7mtgsfXb+Q7KzDM2nMVTYl2+jIHFlQulpS6BBNHmjAnssQK0N0xOQ9zLhi2ff2ZZCJV8skWLCyY0bNGrkhNPPTHIE2vqnZcDvEMjMuRncZtiUU2dXu/gOuXr7Rt1hDvrFVyPUg4zGJIF4+mmdgO5vPCLtuldbA+SMKmsvmQQIDAQAB"
+    networks:
+      - sld-network
+
+  usuarios-perfiles:
+    build:
+      context: ./usuarios-perfiles
+    container_name: sld-users
+    depends_on:
+      - rabbitmq
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8083
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    networks:
+      - sld-network
+
+  backend-for-frontend:
+    build:
+      context: ./backend-for-frontend
+    container_name: sld-bff
+    depends_on:
+      - autenticacion-seguridad
+      - usuarios-perfiles
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8082
+      SERVICES_AUTH_SERVICE_URL: http://autenticacion-seguridad:8081
+      SERVICES_USER_SERVICE_URL: http://usuarios-perfiles:8083
+    networks:
+      - sld-network
+
+networks:
+  sld-network:
+    driver: bridge

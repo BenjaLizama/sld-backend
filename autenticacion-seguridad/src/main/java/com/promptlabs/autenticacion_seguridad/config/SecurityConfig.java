@@ -32,6 +32,7 @@ public class SecurityConfig {
                 // Configuracion de los permisos de rutas
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**").permitAll() // Libertad total
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/session/refresh-token").permitAll()
                         .requestMatchers("/api/v1/session/**").hasAnyAuthority("ROLE_USER", "READ_PRIVILEGE") // fix: antes: READ_PRIVILEGES, ahora: sin s pq así es en RoleAndPrevilegeSeeder
