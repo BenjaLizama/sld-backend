@@ -12,18 +12,12 @@ target/
 .settings
 .springBeans
 .sts4-cache
-.env
 
 ### IntelliJ IDEA ###
 .idea
-.ai
 *.iws
 *.iml
 *.ipr
-
-## test
-src/test/resources/application-test.properties
-src/main/resources/application-test.properties
 
 ### NetBeans ###
 /nbproject/private/
