@@ -1,6 +1,7 @@
 package com.promptlabs.usuarios_perfiles.controller;
 
 import com.promptlabs.usuarios_perfiles.dto.UserProfileCompletionRequest;
+import com.promptlabs.usuarios_perfiles.dto.UserResponse;
 import com.promptlabs.usuarios_perfiles.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +18,18 @@ public class UserProfileController {
     private final UserService userService;
 
     @PutMapping("/{userId}/complete-profile")
-    public ResponseEntity<String> completeProfile(
+    public ResponseEntity<UserResponse> completeProfile(
             @PathVariable UUID userId,
             @Valid @RequestBody UserProfileCompletionRequest request
     ) {
-        try {
-            userService.completarPerfilBase(userId, request);
-            return ResponseEntity.ok("Perfil base actualizado con éxito");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(e.getMessage());
-        }
+        userService.completarPerfilBase(userId, request);
+        UserResponse response = new UserResponse(
+                request.firstName(),
+                request.rut(),
+                "Perfil base actualizado con éxito"
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{userId}/profile-update")

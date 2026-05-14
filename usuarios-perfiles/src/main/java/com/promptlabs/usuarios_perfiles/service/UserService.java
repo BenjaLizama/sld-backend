@@ -55,6 +55,10 @@ public class UserService {
         String roleKey = request.role().toUpperCase();
         ProfileCreationStrategy strategy = strategies.get(roleKey);
 
+        if(roleKey.equals("ROLE_USER"))
+        {
+            System.out.println("ℹ️ Rol " + roleKey + " no requiere perfil específico. Creando solo usuario base.");
+        }
         if (strategy != null) {
             strategy.createEmptyProfile(user);
             System.out.println("estrateguia para rol" + roleKey);
@@ -116,12 +120,13 @@ public class UserService {
                 System.out.println("se actualizo el perifl"+ userId + parentDTO);
                 break;
             case "ROLE_USER":
-                System.out.println("el usuario se guardo sin perfil asignado");
-                break;
+                throw new RuntimeException("el usuario se guardo sin perfil asignado");
 
             default:
                 throw new RuntimeException("No hay lógica de actualización para el rol: " + roleFromToken);
         }
     }
-
+    public boolean existeUsuario(UUID id) {
+        return userRepository.existsById(id);
+    }
 }
