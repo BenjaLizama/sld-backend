@@ -3,6 +3,7 @@ package com.promptlabs.backend_for_frontend.service;
 import com.promptlabs.backend_for_frontend.client.AuthClient;
 import com.promptlabs.backend_for_frontend.client.UserClient;
 import com.promptlabs.backend_for_frontend.dto.SuperRegistroDTO;
+import com.promptlabs.backend_for_frontend.dto.UserResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,17 +19,20 @@ public class RegistroService {
     private final UserClient userClient;
 
     public Map<String, Object> registrar(SuperRegistroDTO superRequest, String headerDeviceId) {
+        // 1. Llamada a Auth
         Map<String, Object> bodyParaAuth = Map.of(
                 "register", superRequest.auth(),
                 "session", superRequest.session()
         );
 
         Map<String, Object> authRes = authClient.registrarUsuario(headerDeviceId, bodyParaAuth);
+
         try {
-            Thread.sleep(2000); // Retrasa la ejecución 2 segundos (2000 ms)
+            Thread.sleep(4000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+
         String token = (String) authRes.get("accessToken");
         String bearerToken = "Bearer " + token;
 
@@ -36,15 +40,26 @@ public class RegistroService {
         UUID userId = UUID.fromString((String) claims.get("userId"));
         String role = extraerRol(claims);
 
-        userClient.actualizarInfoUsurio(userId, superRequest.personal());
+        // --- MODIFICACIÓN: Capturar respuestas de Usuarios ---
 
+        // 2. Actualizar Info Personal y capturar respuesta
+        UserResponse userRes = userClient.actualizarInfoUsurio(userId, superRequest.personal());
+
+        // 3. Actualizar Perfil Específico y capturar respuesta (si aplica)
+        String profileRes = null;
         if (superRequest.profile() != null) {
-            userClient.actualizarPerfilEspecifico(bearerToken, userId, superRequest.profile());
+            profileRes = userClient.actualizarPerfilEspecifico(bearerToken, userId, superRequest.profile());
         }
 
+        // 4. Unificar todo en la respuesta final
         Map<String, Object> resFinal = new java.util.HashMap<>(authRes);
         resFinal.put("perfilCompletado", true);
         resFinal.put("rolAsignado", role);
+        resFinal.put("userData", userRes); // Respuesta de completarPerfilBase
+
+        if (profileRes != null) {
+            resFinal.put("profileData", profileRes); // Respuesta de actualizarPerfilEspecifico
+        }
 
         return resFinal;
     }
