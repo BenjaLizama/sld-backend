@@ -91,7 +91,7 @@ class AuthIntegrationTest {
     @Test
     @DisplayName("Flujo Completo: Registro -> Login exitoso")
     void fullAuthFlowTest() throws Exception {
-        RegisterRequest regReq = new RegisterRequest("full@test.com", "Password123!");
+        RegisterRequest regReq = new RegisterRequest("full@test.com", "Password123!","");
         SessionRequest sessReq = new SessionRequest(DEFAULT_DEVICE, "Test-Station");
 
         mockMvc.perform(post("/api/v1/auth/register")
@@ -114,7 +114,7 @@ class AuthIntegrationTest {
     void concurrentRefreshTokenTest() throws Exception {
         String deviceId = "refresh-device";
         SessionRequest sess = new SessionRequest(deviceId, "Node");
-        RegisterWrapper reg = new RegisterWrapper(new RegisterRequest("ref@test.com", "Pass123!"), sess);
+        RegisterWrapper reg = new RegisterWrapper(new RegisterRequest("ref@test.com", "Pass123!",""), sess);
 
         String res = mockMvc.perform(post("/api/v1/auth/register")
                 .header(DEVICE_HEADER, deviceId)
@@ -144,7 +144,7 @@ class AuthIntegrationTest {
         String securePass = ".123Contrasena#";
 
         RegisterWrapper reg = new RegisterWrapper(
-                new RegisterRequest("user@test.com", securePass),
+                new RegisterRequest("user@test.com", securePass,""),
                 new SessionRequest(devId, "n")
         );
 
@@ -170,7 +170,7 @@ class AuthIntegrationTest {
     @Test
     @DisplayName("Registro fallido: Email duplicado")
     void registerDuplicateEmailTest() throws Exception {
-        RegisterRequest req = new RegisterRequest("dup@test.com", "Pass123!");
+        RegisterRequest req = new RegisterRequest("dup@test.com", "Pass123!","");
         mockMvc.perform(post("/api/v1/auth/register")
                 .header(DEVICE_HEADER, "d1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -190,7 +190,7 @@ class AuthIntegrationTest {
         mockMvc.perform(post("/api/v1/auth/register")
                 .header(DEVICE_HEADER, dev)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new RegisterWrapper(new RegisterRequest("p@test.com", "Correct123!"), new SessionRequest(dev, "n")))));
+                .content(objectMapper.writeValueAsString(new RegisterWrapper(new RegisterRequest("p@test.com", "Correct123!",""), new SessionRequest(dev, "n")))));
 
         LoginWrapper wrong = new LoginWrapper(new LoginRequest("p@test.com", "Wrong!", LoginProvider.LOCAL), new SessionRequest(dev, "n"));
         mockMvc.perform(post("/api/v1/auth/login")
@@ -209,7 +209,7 @@ class AuthIntegrationTest {
         mockMvc.perform(post("/api/v1/auth/register")
                 .header(DEVICE_HEADER, dev)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new RegisterWrapper(new RegisterRequest(email, ".123Contrasena#"), new SessionRequest(dev, "Old")))));
+                .content(objectMapper.writeValueAsString(new RegisterWrapper(new RegisterRequest(email, ".123Contrasena#",""), new SessionRequest(dev, "Old")))));
 
         mockMvc.perform(post("/api/v1/auth/login")
                         .header(DEVICE_HEADER, dev)
@@ -228,7 +228,7 @@ class AuthIntegrationTest {
         String res = mockMvc.perform(post("/api/v1/auth/register")
                         .header(DEVICE_HEADER, dev)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new RegisterWrapper(new RegisterRequest("out@test.com", ".123Contrasena#"), new SessionRequest(dev, "n")))))
+                        .content(objectMapper.writeValueAsString(new RegisterWrapper(new RegisterRequest("out@test.com", ".123Contrasena#",""), new SessionRequest(dev, "n")))))
                 .andReturn().getResponse().getContentAsString();
 
         AuthResponse auth = objectMapper.readValue(res, AuthResponse.class);
@@ -254,7 +254,7 @@ class AuthIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
                                 new RegisterWrapper(
-                                        new RegisterRequest(email, oldPassword),
+                                        new RegisterRequest(email, oldPassword,""),
                                         new SessionRequest(deviceId, "Phone")
                                 ))))
                 .andExpect(status().isCreated())

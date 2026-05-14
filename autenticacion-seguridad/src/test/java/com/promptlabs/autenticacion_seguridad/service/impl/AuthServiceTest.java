@@ -55,7 +55,7 @@ class AuthServiceTest {
     @Test
     @DisplayName("Debería registrar un usuario exitosamente cuando los datos son válidos")
     void register_Success() {
-        RegisterRequest regReq = new RegisterRequest("test@promptlabs.com", "password123");
+        RegisterRequest regReq = new RegisterRequest("test@promptlabs.com", "password123","");
         SessionRequest sessReq = createMockSessionRequest();
         RegisterWrapper wrapper = new RegisterWrapper(regReq, sessReq);
 
@@ -107,7 +107,7 @@ class AuthServiceTest {
     @DisplayName("Debería lanzar EmailAlreadyExistsException")
     void register_Fail_EmailExists() {
         RegisterWrapper wrapper = new RegisterWrapper(
-                new RegisterRequest("existing@mail.com", "pass"),
+                new RegisterRequest("existing@mail.com", "pass",""),
                 createMockSessionRequest()
         );
         when(credentialRepository.existsByEmail(anyString())).thenReturn(true);
@@ -119,7 +119,7 @@ class AuthServiceTest {
     @DisplayName("Debería lanzar RoleNotFoundException")
     void register_Fail_RoleNotFound() {
         RegisterWrapper wrapper = new RegisterWrapper(
-                new RegisterRequest("test@mail.com", "pass"),
+                new RegisterRequest("test@mail.com", "pass",""),
                 createMockSessionRequest()
         );
         when(credentialRepository.existsByEmail(anyString())).thenReturn(false);

@@ -14,7 +14,7 @@ class RegisterRequestTest {
         String email = "usuario@ejemplo.com";
         String pass = "Password123!";
 
-        RegisterRequest request = new RegisterRequest(email, pass);
+        RegisterRequest request = new RegisterRequest(email, pass,"");
 
         assertNotNull(request);
         assertEquals(email, request.email());
@@ -24,8 +24,8 @@ class RegisterRequestTest {
     @Test
     @DisplayName("Prueba de equals y hashCode")
     void testEqualsAndHashCode() {
-        RegisterRequest request1 = new RegisterRequest("test@test.com", "Admin123#");
-        RegisterRequest request2 = new RegisterRequest("test@test.com", "Admin123#");
+        RegisterRequest request1 = new RegisterRequest("test@test.com", "Admin123#","");
+        RegisterRequest request2 = new RegisterRequest("test@test.com", "Admin123#","");
 
         assertEquals(request1, request2);
         assertEquals(request1.hashCode(), request2.hashCode());
@@ -34,7 +34,7 @@ class RegisterRequestTest {
     @Test
     @DisplayName("Prueba de toString")
     void testToString() {
-        RegisterRequest request = new RegisterRequest("test@test.com", "Admin123#");
+        RegisterRequest request = new RegisterRequest("test@test.com", "Admin123#","");
         String toString = request.toString();
 
         assertNotNull(toString);

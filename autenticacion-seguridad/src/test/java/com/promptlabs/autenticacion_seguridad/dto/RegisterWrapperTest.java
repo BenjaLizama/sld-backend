@@ -11,7 +11,7 @@ class RegisterWrapperTest {
     @Test
     @DisplayName("Debería crear RegisterWrapper correctamente con sus objetos anidados")
     void shouldCreateRegisterWrapper() {
-        RegisterRequest registerRequest = new RegisterRequest("test@promptlabs.com", "SecurePass123!");
+        RegisterRequest registerRequest = new RegisterRequest("test@promptlabs.com", "SecurePass123!","");
         SessionRequest sessionRequest = new SessionRequest("device-xyz", "Android Tablet");
 
         RegisterWrapper wrapper = new RegisterWrapper(registerRequest, sessionRequest);
@@ -25,7 +25,7 @@ class RegisterWrapperTest {
     @Test
     @DisplayName("Prueba de equals y hashCode")
     void testEqualsAndHashCode() {
-        RegisterRequest register = new RegisterRequest("user@mail.com", "Pass123!");
+        RegisterRequest register = new RegisterRequest("user@mail.com", "Pass123!","");
         SessionRequest session = new SessionRequest("id", "name");
 
         RegisterWrapper wrapper1 = new RegisterWrapper(register, session);
@@ -38,7 +38,7 @@ class RegisterWrapperTest {
     @Test
     @DisplayName("Prueba de toString")
     void testToString() {
-        RegisterRequest register = new RegisterRequest("user@mail.com", "Pass123!");
+        RegisterRequest register = new RegisterRequest("user@mail.com", "Pass123!","");
         SessionRequest session = new SessionRequest("id", "name");
         RegisterWrapper wrapper = new RegisterWrapper(register, session);
 

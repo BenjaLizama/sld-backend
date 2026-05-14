@@ -49,7 +49,7 @@ class AuthControllerTest {
     @Test
     @DisplayName("Debería registrar un usuario y retornar 201 Created")
     void registerSuccessTest() throws Exception {
-        RegisterRequest regReq = new RegisterRequest("test@mail.com", "Password123!");
+        RegisterRequest regReq = new RegisterRequest("test@mail.com", "Password123!","");
         SessionRequest sessReq = new SessionRequest("dev-123", "Chrome-Linux");
         RegisterWrapper wrapper = new RegisterWrapper(regReq, sessReq);
         AuthResponse response = new AuthResponse("access", "refresh", Instant.now());
