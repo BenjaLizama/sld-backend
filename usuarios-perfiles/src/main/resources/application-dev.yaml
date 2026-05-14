@@ -1,5 +1,15 @@
 # Propiedades de aplicación | SOLO PARA DESARROLLO
 spring:
+  rabbitmq:
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 3s
+          max-attempts: 3 # Solo intentará 3 veces y luego lo descartará o enviará a la DLQ
+          max-interval: 10s
+          multiplier: 2
+        default-requeue-rejected: false # IMPORTANTE: Por defecto no reencolar los rechazados
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
