@@ -32,7 +32,7 @@ public class UserCreationTest {
     @Test
     void cuandoCompletarPerfilBase_debeGuardarDatosCorrectamente() {
         // 1. Preparar datos: Crear Género y Usuario inicial
-        Gender gender = genderRepository.save(new Gender(1, "MASCULINO")); // Ajusta según tu entidad Gender
+        Gender gender = genderRepository.save(new Gender(1L, "MASCULINO")); // Ajusta según tu entidad Gender
 
         UUID userId = UUID.randomUUID();
         userRepository.save(User.builder()
@@ -47,11 +47,14 @@ public class UserCreationTest {
                 null,
                 "Developer",
                 null,
-                1, // genderId
                 "+56912345678",
-                "Calle Falsa 123",
+                "calle 1",
                 LocalDate.of(1995, 5, 13),
-                "Chilena"
+                "Chilena",
+                1L
+
+
+
         );
 
         // 3. Llamar directamente al servicio (Sin pasar por el Controller)
@@ -62,6 +65,6 @@ public class UserCreationTest {
 
         assertEquals("12345678-9", userGuardado.getRut());
         assertEquals("Lucci", userGuardado.getFirstName());
-        assertEquals("MASCULINO", userGuardado.getGender().getName());
+        assertEquals("MASCULINO", userGuardado.getGender().getGender());
     }
 }
