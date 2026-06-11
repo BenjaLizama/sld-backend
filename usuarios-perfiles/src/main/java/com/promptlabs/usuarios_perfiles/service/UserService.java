@@ -7,7 +7,7 @@ import com.promptlabs.usuarios_perfiles.entity.User;
 import com.promptlabs.usuarios_perfiles.repository.GenderRepository;
 import com.promptlabs.usuarios_perfiles.repository.UserRepository;
 import com.promptlabs.usuarios_perfiles.service.strategy.ProfileCreationStrategy;
-import com.promptlabs.usuarios_perfiles.urils.TokenUtils;
+import com.promptlabs.usuarios_perfiles.utils.TokenUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

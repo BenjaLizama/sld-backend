@@ -1,4 +1,4 @@
-package com.promptlabs.usuarios_perfiles.urils;
+package com.promptlabs.usuarios_perfiles.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Base64;

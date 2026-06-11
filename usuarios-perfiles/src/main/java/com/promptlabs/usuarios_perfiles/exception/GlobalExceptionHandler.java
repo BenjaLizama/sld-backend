@@ -32,6 +32,11 @@ public class GlobalExceptionHandler  {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor");
     }
 
+    @ExceptionHandler(RelationshipException.class)
+    public ResponseEntity<Map<String,Object>> handeleRelationship(RelationshipException ex){
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
     private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String message) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
