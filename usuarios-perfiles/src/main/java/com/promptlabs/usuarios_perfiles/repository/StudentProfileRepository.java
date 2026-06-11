@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface StudentProfileRepository extends JpaRepository<StudentProfile, UUID> {
     Optional<StudentProfile> findByUserRut(String rut);
+
+    boolean existsByUserRut(String rut);
 }
