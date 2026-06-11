@@ -77,7 +77,7 @@ public class FamilyRelationshipService {
         }
         return familyRelationshipRepository.findByStudentProfileUserRut(studentRut).stream()
                 .map(rel -> new FamilyMemberDTO(
-                        rel.getParentProfile().getUser().getFirstName(), rel.getParentProfile().getUser().getRut(), rel.getParentType().getRelationship())).collect(java.util.stream.Collectors.toList());
+                        rel.getParentProfile().getUser().getRut(), rel.getParentProfile().getUser().getFirstName(), rel.getParentType().getRelationship())).collect(java.util.stream.Collectors.toList());
     }
 
 }
