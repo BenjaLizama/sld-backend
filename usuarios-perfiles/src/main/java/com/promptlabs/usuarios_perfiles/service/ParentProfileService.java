@@ -14,13 +14,16 @@ import java.util.UUID;
 public class ParentProfileService {
 
     private final ParentProfileRepository parentProfileRepository;
+    private final com.promptlabs.usuarios_perfiles.repository.UserRepository userRepository;
 
     @Transactional
     public void updateParentInfo(UUID userId, ParentInformationUpdateRequest request) {
         ParentProfile profile = parentProfileRepository.findById(userId)
                 .orElseGet(() -> {
+                    com.promptlabs.usuarios_perfiles.entity.User user = userRepository.findById(userId)
+                            .orElseThrow(() -> new RuntimeException("Usuario no encontrado para crear perfil de apoderado: " + userId));
                     ParentProfile newProfile = new ParentProfile();
-                    newProfile.setId(userId);
+                    newProfile.setUser(user);
                     return newProfile;
                 });
 
