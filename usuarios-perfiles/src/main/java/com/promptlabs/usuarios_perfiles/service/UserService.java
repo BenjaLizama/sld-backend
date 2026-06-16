@@ -58,8 +58,7 @@ public class UserService {
         if(roleKey.equals("ROLE_USER"))
         {
             System.out.println("ℹ️ Rol " + roleKey + " no requiere perfil específico. Creando solo usuario base.");
-        }
-        if (strategy != null) {
+        } else if (strategy != null) {
             strategy.createEmptyProfile(user);
             System.out.println("estrateguia para rol" + roleKey);
         } else {
