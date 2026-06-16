@@ -17,6 +17,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/registro")
 @RequiredArgsConstructor
 @Tag(name = "Orquestación de Registro", description = "Endpoints para el registro completo de usuarios y perfiles")
+@CrossOrigin(origins = "*")
 public class RgistroController {
    private final RegistroService registroService;
 

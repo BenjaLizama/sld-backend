@@ -20,10 +20,10 @@ public class RegistroService {
 
     public Map<String, Object> registrar(SuperRegistroDTO superRequest, String headerDeviceId) {
         // 1. Llamada a Auth
-        Map<String, Object> bodyParaAuth = Map.of(
-                "register", superRequest.auth(),
-                "session", superRequest.session()
-        );
+        // Cambiamos el Map.of por un HashMap amigable para Feign/Jackson
+        Map<String, Object> bodyParaAuth = new java.util.HashMap<>();
+        bodyParaAuth.put("register", superRequest.auth());
+        bodyParaAuth.put("session", superRequest.session());
 
         Map<String, Object> authRes = authClient.registrarUsuario(headerDeviceId, bodyParaAuth);
 
