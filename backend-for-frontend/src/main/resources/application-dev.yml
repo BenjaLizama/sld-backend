@@ -11,3 +11,16 @@ services:
 logging:
   level:
     org.springframework.web: DEBUG
+resilience4j:
+  circuitbreaker:
+    instances:
+      user-service:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        sliding-window-size: 10
+        wait-duration-in-open-state: 30s
+      aurh-service:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        sliding-window-size: 10
+        wait-duration-in-open-state: 30s
