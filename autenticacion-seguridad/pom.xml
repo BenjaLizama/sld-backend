@@ -31,6 +31,10 @@
 		<grpc.version>1.77.1</grpc.version>
 		<protobuf-java.version>4.33.4</protobuf-java.version>
 		<spring-grpc.version>1.0.2</spring-grpc.version>
+		<sonar.projectKey>auth</sonar.projectKey>
+		<sonar.projectName>auth</sonar.projectName>
+		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.token>${env.SONAR_TOKEN}</sonar.token>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -281,6 +285,11 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>5.1.0.4751</version>
 			</plugin>
 		</plugins>
 	</build>
