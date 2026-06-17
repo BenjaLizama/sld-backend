@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.promptlabs.usuarios_perfiles.dto.*;
 import com.promptlabs.usuarios_perfiles.entity.Gender;
 import com.promptlabs.usuarios_perfiles.entity.User;
+import com.promptlabs.usuarios_perfiles.mapper.UserMapper;
 import com.promptlabs.usuarios_perfiles.repository.GenderRepository;
 import com.promptlabs.usuarios_perfiles.repository.UserRepository;
 import com.promptlabs.usuarios_perfiles.service.strategy.ProfileCreationStrategy;
@@ -30,8 +31,9 @@ public class UserService {
     private final StudentProfileService studentProfileService;
     private final ParentProfileService parentProfileService;
     private final ObjectMapper objectMapper;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, List<ProfileCreationStrategy> strategyList, GenderRepository genderRepository, TeacherProfileService teacherProfileService, StudentProfileService studentProfileService, ParentProfileService parentProfileService, ObjectMapper objectMapper) {
+    public UserService(UserRepository userRepository, List<ProfileCreationStrategy> strategyList, GenderRepository genderRepository, TeacherProfileService teacherProfileService, StudentProfileService studentProfileService, ParentProfileService parentProfileService, ObjectMapper objectMapper, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.strategies = strategyList.stream()
                 .collect(Collectors.toMap(
@@ -43,6 +45,7 @@ public class UserService {
         this.studentProfileService = studentProfileService;
         this.parentProfileService = parentProfileService;
         this.objectMapper = objectMapper;
+        this.userMapper = userMapper;
     }
 
     @Transactional
@@ -55,8 +58,7 @@ public class UserService {
         String roleKey = request.role().toUpperCase();
         ProfileCreationStrategy strategy = strategies.get(roleKey);
 
-        if(roleKey.equals("ROLE_USER"))
-        {
+        if (roleKey.equals("ROLE_USER")) {
             System.out.println("ℹ️ Rol " + roleKey + " no requiere perfil específico. Creando solo usuario base.");
         } else if (strategy != null) {
             strategy.createEmptyProfile(user);
@@ -116,7 +118,7 @@ public class UserService {
             case "ROLE_PARENT":
                 ParentInformationUpdateRequest parentDTO = objectMapper.convertValue(datos, ParentInformationUpdateRequest.class);
                 parentProfileService.updateParentInfo(userId, parentDTO);
-                System.out.println("se actualizo el perifl"+ userId + parentDTO);
+                System.out.println("se actualizo el perifl" + userId + parentDTO);
                 break;
             case "ROLE_USER":
                 throw new RuntimeException("el usuario se guardo sin perfil asignado");
@@ -125,7 +127,19 @@ public class UserService {
                 throw new RuntimeException("No hay lógica de actualización para el rol: " + roleFromToken);
         }
     }
+
     public boolean existeUsuario(UUID id) {
         return userRepository.existsById(id);
     }
+
+    public List<UserSummaryDTO> listUsers() {
+        return userRepository
+                .findAll()
+                .stream()
+                .filter(user -> user.getFirstName() != null)
+                .map(userMapper::toSummary)
+                .toList();
+    }
+
+
 }

@@ -2,11 +2,13 @@ package com.promptlabs.backend_for_frontend.service;
 
 import com.promptlabs.backend_for_frontend.client.UserClient;
 import com.promptlabs.backend_for_frontend.dto.UserResponse;
+import com.promptlabs.backend_for_frontend.dto.UserSummaryResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -34,5 +36,16 @@ public class UserService {
 
         throw new RuntimeException(
                 "Servicio User no disponible");
+    }
+    @CircuitBreaker(
+            name = "ms-usuarios",
+            fallbackMethod = "fallbackUsers"
+    )
+    public List<UserSummaryResponse> listUsers() {
+        return userClient.listUsers();
+    }
+
+    public List<UserSummaryResponse> fallbackUsers(Exception ex) {
+        return List.of();
     }
 }
