@@ -46,7 +46,7 @@ class RoleAndPrivilegeSeederTest {
         seeder.run();
 
         verify(privilegeRepository, times(3)).saveAndFlush(any(PrivilegeEntity.class));
-        verify(roleRepository, times(2)).saveAndFlush(any(RoleEntity.class));
+        verify(roleRepository, times(5)).saveAndFlush(any(RoleEntity.class));
     }
 
     @Test

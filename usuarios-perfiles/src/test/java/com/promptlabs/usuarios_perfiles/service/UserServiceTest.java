@@ -7,6 +7,7 @@ import com.promptlabs.usuarios_perfiles.entity.User;
 import com.promptlabs.usuarios_perfiles.repository.GenderRepository;
 import com.promptlabs.usuarios_perfiles.repository.UserRepository;
 import com.promptlabs.usuarios_perfiles.service.strategy.ProfileCreationStrategy;
+import com.promptlabs.usuarios_perfiles.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +36,8 @@ class UserServiceTest {
     private ParentProfileService parentProfileService;
     @Mock
     private ObjectMapper objectMapper;
+    @Mock
+    private UserMapper userMapper;
 
     // Mocks para las estrategias
     @Mock
@@ -59,7 +62,8 @@ class UserServiceTest {
                 teacherProfileService,
                 studentProfileService,
                 parentProfileService,
-                objectMapper
+                objectMapper,
+                userMapper
         );
     }
 
