@@ -18,7 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Tag(name = "Orquestación de Registro", description = "Endpoints para el registro completo de usuarios y perfiles")
 @CrossOrigin(origins = "*")
-public class RgistroController {
+public class RegistroController {
    private final RegistroService registroService;
 
     @Operation(summary = "Registro completo de usuario", description = "Orquesta el registro en autenticación y la creación del perfil en el servicio de usuarios.")

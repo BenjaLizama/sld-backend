@@ -2,6 +2,7 @@ package com.promptlabs.usuarios_perfiles.controller;
 
 import com.promptlabs.usuarios_perfiles.dto.UserProfileCompletionRequest;
 import com.promptlabs.usuarios_perfiles.dto.UserResponse;
+import com.promptlabs.usuarios_perfiles.dto.UserSummaryDTO;
 import com.promptlabs.usuarios_perfiles.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -9,10 +10,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.groups.ConvertGroup;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -61,5 +65,17 @@ public class UserProfileController {
         userService.actualizarPerfilEspecifico(userId, token, body);
 
         return ResponseEntity.ok("Procesado correctamente");
+    }
+    @Operation(
+            summary = "Listar usuarios",
+            description = "Obtiene el listado resumido de usuarios registrados"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Listado obtenido correctamente"
+    )
+    @GetMapping
+    public ResponseEntity<List<UserSummaryDTO>> listUsers(){
+        return ResponseEntity.ok(userService.listUsers());
     }
 }
