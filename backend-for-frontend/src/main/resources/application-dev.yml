@@ -19,8 +19,30 @@ resilience4j:
         minimum-number-of-calls: 5
         sliding-window-size: 10
         wait-duration-in-open-state: 30s
-      aurh-service:
+        record-exceptions:
+          - java.lang.Exception
+      auth-service:
         failure-rate-threshold: 50
         minimum-number-of-calls: 5
         sliding-window-size: 10
         wait-duration-in-open-state: 30s
+        record-exceptions:
+          - java.lang.Exception
+      ms-usuarios:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        sliding-window-size: 10
+        wait-duration-in-open-state: 30s
+        record-exceptions:
+          - java.lang.Exception
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true

@@ -77,9 +77,10 @@ class AuthServiceTest {
         LoginData loginData = new LoginData("user", "pass", "LOCAL");
         SessionDTO sessionData = new SessionDTO("dev123", "Chrome");
         LoginRequestDTO request = new LoginRequestDTO(loginData, sessionData);
+        String deviceId = "dev123";
         Exception ex = new Exception("Service Down");
 
-        assertThrows(RuntimeException.class, () -> authService.fallbackLogin(request, ex));
+        assertThrows(RuntimeException.class, () -> authService.fallbackLogin(request, deviceId, ex));
     }
 
     @Test
