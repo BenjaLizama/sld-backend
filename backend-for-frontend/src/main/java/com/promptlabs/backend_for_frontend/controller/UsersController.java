@@ -1,6 +1,8 @@
 package com.promptlabs.backend_for_frontend.controller;
 
+import com.promptlabs.backend_for_frontend.dto.StudentSummary;
 import com.promptlabs.backend_for_frontend.dto.UserSummaryResponse;
+import com.promptlabs.backend_for_frontend.service.GradesService;
 import com.promptlabs.backend_for_frontend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,6 +24,7 @@ import java.util.List;
 @Tag(name = "Usuarios", description = "Endpoints para la gestión y consulta de perfiles de usuario.")
 public class UsersController {
     private final UserService userService;
+    private final GradesService gradesService;
 
     @Operation(summary = "Listar usuarios", description = "Devuelve una lista resumida de todos los usuarios registrados en el sistema.")
     @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente")
@@ -30,5 +33,10 @@ public class UsersController {
         return ResponseEntity.ok(
                 userService.listUsers()
         );
+    }
+
+    @GetMapping("/students")
+    public ResponseEntity<List<StudentSummary>> getAllStudents() {
+        return ResponseEntity.ok(userService.listStudents());
     }
 }

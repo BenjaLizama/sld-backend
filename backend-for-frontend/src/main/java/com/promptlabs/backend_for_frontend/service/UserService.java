@@ -1,6 +1,7 @@
 package com.promptlabs.backend_for_frontend.service;
 
 import com.promptlabs.backend_for_frontend.client.UserClient;
+import com.promptlabs.backend_for_frontend.dto.StudentSummary;
 import com.promptlabs.backend_for_frontend.dto.UserResponse;
 import com.promptlabs.backend_for_frontend.dto.UserSummaryResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -47,5 +48,9 @@ public class UserService {
 
     public List<UserSummaryResponse> fallbackUsers(Exception ex) {
         return List.of();
+    }
+
+    public List<StudentSummary> listStudents() {
+        return userClient.listStudentsSummary();
     }
 }

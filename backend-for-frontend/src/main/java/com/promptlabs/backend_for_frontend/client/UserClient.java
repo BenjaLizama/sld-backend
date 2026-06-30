@@ -1,6 +1,7 @@
 package com.promptlabs.backend_for_frontend.client;
 
 import com.promptlabs.backend_for_frontend.config.FeignConfig;
+import com.promptlabs.backend_for_frontend.dto.StudentSummary;
 import com.promptlabs.backend_for_frontend.dto.UserResponse;
 import com.promptlabs.backend_for_frontend.dto.UserSummaryResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -25,5 +26,8 @@ public interface UserClient {
 
     @GetMapping("/api/v1/users")
     List<UserSummaryResponse> listUsers();
+
+    @GetMapping("/api/v1/students/summary")
+    List<StudentSummary> listStudentsSummary();
 
 }
