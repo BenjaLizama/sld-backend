@@ -34,7 +34,6 @@ public class StudentProfileService {
     }
     @Transactional(readOnly = true)
     public List<StudentSummary> findAllStudents() {
-      List<User>  studiantes = userRepository.findByStudentProfileIsNotNull();
 
       return userRepository.findByStudentProfileIsNotNull()
               .stream()
