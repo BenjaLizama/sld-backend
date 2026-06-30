@@ -11,11 +11,9 @@ public record GradeRequestDto(
         double value,
 
         @NotNull
-        @NotBlank
         UUID studentId,
 
         @NotNull
-        @NotBlank
         UUID teacherId,
 
         @Size(min = 3, max = 70)
