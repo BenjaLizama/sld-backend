@@ -91,18 +91,12 @@ public class UserService {
 
 
         userRepository.save(user);
-
-        System.out.println("✅ Perfil base completado para el usuario ID: " + userId);
     }
 
     @Transactional
     public void actualizarPerfilEspecifico(UUID userId, String token, Map<String, Object> datos) {
-        System.out.println("Entrando a actualizarPerfilEspecifico...");
-        System.out.println("Token recibido (primeros 20 caracteres): " + (token != null ? token.substring(0, 20) : "NULL"));
 
         String roleFromToken = TokenUtils.getRoleFromToken(token);
-
-        System.out.println("DEBUG: Procesando actualización para Rol: [" + roleFromToken + "] y User: " + userId);
 
         switch (roleFromToken) {
             case "ROLE_TEACHER":
@@ -127,6 +121,7 @@ public class UserService {
                 throw new RuntimeException("No hay lógica de actualización para el rol: " + roleFromToken);
         }
     }
+
 
     public boolean existeUsuario(UUID id) {
         return userRepository.existsById(id);

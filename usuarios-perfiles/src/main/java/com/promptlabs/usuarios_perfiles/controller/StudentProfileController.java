@@ -1,6 +1,7 @@
 package com.promptlabs.usuarios_perfiles.controller;
 
 import com.promptlabs.usuarios_perfiles.dto.StudentInformationUpdateRequest;
+import com.promptlabs.usuarios_perfiles.dto.StudentSummary;
 import com.promptlabs.usuarios_perfiles.service.StudentProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -9,9 +10,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -36,4 +39,11 @@ public class StudentProfileController {
         studentProfileService.updateMedicalInfo(userId, request);
         return ResponseEntity.ok("Información médica actualizada exitosamente");
     }
+    @GetMapping("/summary")
+    public ResponseEntity<List<StudentSummary>> getStudentSummary(){
+        List<StudentSummary> response = studentProfileService.findAllStudents();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+    }
+
 }
