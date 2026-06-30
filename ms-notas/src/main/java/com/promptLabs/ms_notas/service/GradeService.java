@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.promptLabs.ms_notas.repository.GradeRepository;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -53,14 +52,12 @@ public class GradeService {
             savedGrade.setValue(requestDto.value());
         }
 
-
         return new GradeResponseDto(
                 savedGrade.getValue(),
                 savedGrade.getName(),
                 id,
                 savedGrade.getStudentId(),
                 savedGrade.getTeacherId());
-
 
     }
 
