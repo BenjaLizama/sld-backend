@@ -1,15 +1,19 @@
-# 1. Usamos una imagen base oficial de Java 17 (versión Alpine, que es súper liviana)
-FROM eclipse-temurin:17-jdk-alpine
-
-# 2. Le decimos a Docker en qué carpeta interna vamos a trabajar
+# ETAPA 1: Build con Java 21
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# 3. Copiamos el archivo .jar que genera tu proyecto al contenedor y lo renombramos a app.jar
-# (Nota: Antes de construir la imagen, debes ejecutar 'mvn clean package' en tu terminal)
-COPY target/*.jar app.jar
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-# 4. Exponemos el puerto para que el mundo exterior pueda comunicarse con el contenedor
+COPY src ./src
+# Ejecutamos el empaquetado (ahora no fallará por el plugin)
+RUN mvn clean package -DskipTests
+
+# ETAPA 2: Runtime con Java 21
+FROM eclipse-temurin:21-jre-jammy
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8084
-
-# 5. El comando que se ejecutará cuando el contenedor se encienda
 ENTRYPOINT ["java", "-jar", "app.jar"]
