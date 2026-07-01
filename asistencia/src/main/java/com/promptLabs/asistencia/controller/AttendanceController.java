@@ -46,4 +46,11 @@ public class AttendanceController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @GetMapping("/attendance-percent/{id}")
+    public ResponseEntity<Double> getAttendancePercent(@PathVariable UUID id) {
+
+            Double response = attendanceService.countAttendances(id);
+            return  ResponseEntity.status(HttpStatus.OK).body(response);
+
+    }
 }
