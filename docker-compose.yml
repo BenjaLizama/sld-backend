@@ -53,6 +53,18 @@ services:
     networks:
       - sld-network
 
+  ms-notas:
+    build:
+      context: ./ms-notas
+    container_name: sld-notas
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8084
+    networks:
+      - sld-network
+
   backend-for-frontend:
     build:
       context: ./backend-for-frontend
@@ -60,6 +72,7 @@ services:
     depends_on:
       - autenticacion-seguridad
       - usuarios-perfiles
+      - ms-notas
     ports:
       - "8082:8082"
     environment:
@@ -67,8 +80,10 @@ services:
       SERVER_PORT: 8082
       SERVICES_AUTH_SERVICE_URL: http://autenticacion-seguridad:8081
       SERVICES_USER_SERVICE_URL: http://usuarios-perfiles:8083
+      SERVICES_NOTES_SERVICE_URL: http://ms-notas:8084
     networks:
       - sld-network
+
   sonarqube:
     image: sonarqube:9.9-community
     container_name: sonarqube
@@ -80,6 +95,7 @@ services:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_logs:/opt/sonarqube/logs
       - sonarqube_extensions:/opt/sonarqube/extensions
+
 volumes:
   sonarqube_data:
   sonarqube_logs:

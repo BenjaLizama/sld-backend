@@ -1,11 +1,12 @@
 package com.promptlabs.backend_for_frontend.controller;
 
+import com.promptlabs.backend_for_frontend.dto.StudentSummary;
 import com.promptlabs.backend_for_frontend.dto.UserSummaryResponse;
+import com.promptlabs.backend_for_frontend.service.GradesService;
 import com.promptlabs.backend_for_frontend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,5 +31,10 @@ public class UsersController {
         return ResponseEntity.ok(
                 userService.listUsers()
         );
+    }
+
+    @GetMapping("/students")
+    public ResponseEntity<List<StudentSummary>> getAllStudents() {
+        return ResponseEntity.ok(userService.listStudents());
     }
 }

@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: grades-service
+
+  datasource:
+    url: jdbc:h2:mem:gradesdb # 'mem' significa que vive en la memoria RAM
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update # Crea y actualiza las tablas automáticamente basándose en tu Entidad
+    show-sql: true # Te imprime en consola las consultas SQL (muy útil para debug)
+
+  h2:
+    console:
+      enabled: true # ¡Magia pura! Te crea una interfaz web para ver tu base de datos
+      path: /h2-console
+
+server:
+  port: 8084 # El puerto donde correrá este microservicio
